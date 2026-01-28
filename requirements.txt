@@ -1,6 +1,0 @@
-# Requirements adjusted for Python 3.13
-Pillow==11.3.0 ; python_version >= '3.13'
-greenlet==3.2.3 ; python_version >= '3.13'
-gevent==25.5.1 ; python_version >= '3.13'
-psycopg2==2.9.10 ; python_version >= '3.13'
-legacy-cgi==2.6.3 ; python_version >= '3.13'

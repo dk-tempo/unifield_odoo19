@@ -1,6 +1,6 @@
 {
     "name": "MSF Search Panel",
-    "version": "18.0.1.0.0",
+    "version": "19.0.1.0.0",
     "category": "",
     "summary": "Displays Search Panel in Modal Search views if applicable",
     "author": "TeMPO Consulting",

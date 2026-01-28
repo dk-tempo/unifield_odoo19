@@ -1,6 +1,6 @@
 {
     "name": "MSF Product",
-    "version": "18.0.1.0.0",
+    "version": "19.0.1.0.0",
     "category": "",
     "summary": "Port of product modules from Unifield",
     "author": "TeMPO Consulting",

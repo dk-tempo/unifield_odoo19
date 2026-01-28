@@ -9,11 +9,10 @@
 {
     "name": "Web Responsive",
     "summary": "Responsive web client, community-supported",
-    "version": "18.0.1.0.1",
+    "version": "19.0.1.0.1",
     "category": "Website",
     "website": "https://github.com/OCA/web",
-    "author": "LasLabs, Tecnativa, ITerra, Onestein, "
-    "Odoo Community Association (OCA)",
+    "author": "LasLabs, Tecnativa, ITerra, Onestein, Odoo Community Association (OCA)",
     "license": "LGPL-3",
     "installable": True,
     "depends": ["web", "web_tour", "mail"],
@@ -50,8 +49,8 @@
             "/web_responsive/static/src/components/command_palette/*",
             "/web_responsive/static/src/views/form/*",
         ],
-        "web.assets_tests": [
-            "/web_responsive/static/tests/test_patch.esm.js",
+        "web.assets_clickbot": [
+            "/web_responsive/static/src/clickbot/clickbot.esm.js",
         ],
         "web.qunit_suite_tests": [
             "/web_responsive/static/tests/apps_menu_tests.esm.js",

@@ -179,8 +179,6 @@ class ProductProduct(models.Model):
                            readonly=True)
     cs_txt = fields.Char(string="Controlled subst. icon", compute="_compute_kc_dg_cs_ssl_values", store=True, size=8,
                          readonly=True)
-    uom_category_id = fields.Many2one(string="Uom Category", related="uom_id.category_id",
-                                      comodel_name="uom.category", readonly=True)
     no_external = fields.Boolean(string="External partners orders", compute="_get_restriction", store=True,
                                  readonly=True)
     no_esc = fields.Boolean(string="ESC partners orders", compute="_get_restriction", store=True, readonly=True)

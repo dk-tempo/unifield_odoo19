@@ -13,7 +13,7 @@ class ResUsers(models.Model):
             ("bottom", "Bottom"),
             ("sided", "Sided"),
         ],
-        default="auto",
+        default="bottom",
     )
 
     @property

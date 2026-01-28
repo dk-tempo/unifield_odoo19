@@ -3,6 +3,7 @@ from odoo import api, fields, models
 
 class ResPartnerAddress(models.Model):
     _name = "res.partner.address"
+    _description = "Partner Address"
 
     partner_id = fields.Many2one(string="Partner Name", comodel_name="res.partner",
                                  help="Keep empty for a private address, not related to partner.")
