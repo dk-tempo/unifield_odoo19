@@ -285,6 +285,8 @@ class ProductProduct(models.Model):
                                  readonly=True)
     import_product_qty = fields.Float(string="Qty", compute="_get_import_product_qty", inverse="_write_imp_product_qty",
                                       digits=(16, 2))
+    uom_category_id = fields.Many2one(string="Uom Category", related="uom_id.category_id",
+                                      comodel_name="uom.category", readonly=True)
 
     # Compute methods
     def _product_available(self):

@@ -6,7 +6,7 @@
     "author": "TeMPO Consulting",
     "website": "https://tempo-consulting.fr",
     "license": "LGPL-3",
-    "depends": ["uom", "mail"],
+    "depends": ["msf_uom", "mail"],
     "data": [
         "security/ir.model.access.csv",
 
