@@ -4,6 +4,7 @@ from odoo import api, fields, models
 
 class ProductPurchaseLine(models.Model):
     _name = "product.purchase.line"
+    _description = "Product Purchase Line"
 
     name = fields.Char(string="Description")
     product_id = fields.Many2one(string="Product", comodel_name="product.product")

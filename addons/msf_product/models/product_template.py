@@ -8,7 +8,7 @@ class ProductTemplate(models.Model):
     # Default methods
     def _get_uom_id(self):
         """"""
-        return self.env.ref("uom.product_uom_unit")
+        return self.env.ref("msf_uom.product_uom_unit")
 
     def _default_category(self):
         """"""

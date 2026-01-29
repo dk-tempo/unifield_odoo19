@@ -4,6 +4,7 @@ from odoo import api, fields, models
 
 class ProductPurchase(models.Model):
     _name = "product.purchase"
+    _description = "Product Purchase"
 
 
 
