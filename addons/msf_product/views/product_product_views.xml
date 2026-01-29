@@ -263,9 +263,14 @@
                 <field name="nomen_manda_2" />
                 <field name="nomen_manda_3" />
                 <searchpanel>
-                    <field string="Nomenclature" name="nomen_manda_3" icon="fa-users" enable_counters="1"/>
+                    <field string="Nomenclature" name="nomen_manda_3" icon="fa-users" limit="0" enable_counters="1" expand="1"/>
                 </searchpanel>
-
+                <group>
+                    <filter string="Main Type" name="group_by_main_type" context="{'group_by': 'nomen_manda_0'}"/>
+                    <filter string="Group" name="group_by_group" context="{'group_by': 'nomen_manda_1'}"/>
+                    <filter string="Family" name="group_by_family" context="{'group_by': 'nomen_manda_2'}"/>
+                    <filter string="Root" name="group_by_root" context="{'group_by': 'nomen_manda_3'}"/>
+                </group>
             </search>
         </field>
     </record>
