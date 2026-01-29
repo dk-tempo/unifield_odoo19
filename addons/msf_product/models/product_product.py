@@ -250,9 +250,9 @@ class ProductProduct(models.Model):
     #                                    column1="product_id", column2="unifield_instance_id", readonly=True)
     restrictions_txt = fields.Text(string="Restrictions", compute="_get_restrictions_txt", readonly=True)
     mml_status = fields.Selection(string="MML", compute="_get_std_mml_status",
-                                  selection=[('T', 'Yes'), ('F', 'No'), ('na', '')], readonly=True)
+                                  selection=[('T', 'Yes'), ('F', 'No'), ('na', ' ')], readonly=True)
     msl_status = fields.Selection(string="MSL", compute="_get_std_mml_status",
-                                  selection=[('T', 'Yes'), ('F', 'No'), ('na', '')], readonly=True)
+                                  selection=[('T', 'Yes'), ('F', 'No'), ('na', ' ')], readonly=True)
     # in_mml_instance = fields.Many2one(string="MML Valid for instance", compute="get_fake", comodel_name="msf.instance",
     #                                   readonly=True, domain="[('state', '=', 'active'), ('level', '!=', 'section')]")
     # mml_restricted_instance = fields.Many2one(string="MML Restricted to instance", compute="get_fake",
