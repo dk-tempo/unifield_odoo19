@@ -23,12 +23,10 @@ class Base(models.AbstractModel):
         field = self._fields[field_name]
         comodel = self.env[field.comodel_name].with_context(hierarchical_naming=False)
         parent_name = kwargs.get('parent_field', comodel._parent_name)
-        displayed_ids = kwargs.get('displayed_ids', False)
-        if displayed_ids:
-            display_domain = Domain([("id", 'in', displayed_ids)])
-        else:
-            # If no defined display elements we get the root ids
-            display_domain = Domain([(parent_name, '=', False)])
+        displayed_ids = kwargs.get('displayed_ids', [])
+        # We always get the root ids
+        display_domain = Domain(['|', (parent_name, '=', False), ('id', 'in', displayed_ids)])
+
         # Search for displayed elements
         displayed_elements = comodel.search_read(display_domain, ['id', 'display_name', parent_name])
         root_ids = [False]
@@ -41,6 +39,7 @@ class Base(models.AbstractModel):
                 # and some code might depend on that somewhere
                 "parent_id": False,
                 "parentId": False,
+                "childrenIds": []
             }
         }
         for element in displayed_elements:
@@ -49,8 +48,9 @@ class Base(models.AbstractModel):
                 'display_name': element["display_name"],
                 'parent_id': element[parent_name],
                 'parentId': element[parent_name],
+                'childrenIds': []
             }
-            if not parent_name in element:
+            if not element[parent_name]:
                 root_ids.append(element['id'])
         # Get their child ids
         children_groups = comodel.formatted_read_group(domain=[(parent_name, 'in', values.keys())], groupby=[parent_name],
@@ -58,11 +58,10 @@ class Base(models.AbstractModel):
         for child_group in children_groups:
             parent_value_id = child_group[f'{parent_name}:min']
             values[parent_value_id]['childrenIds'] = child_group['id:array_agg']
-
         enable_counters = kwargs.get("enable_counters", False)
         if not enable_counters:
             return {
-                "values": values,
+                "values": list(values.items()),
                 "rootIds": root_ids,
             }
 
@@ -73,7 +72,7 @@ class Base(models.AbstractModel):
         global_domain = model_domain & category_domain & filter_domain
 
         return {
-            "values": values,
+            "values": list(values.items()),
             "rootIds": root_ids,
         }
 

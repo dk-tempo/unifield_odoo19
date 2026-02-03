@@ -78,6 +78,23 @@ patch(SearchModel.prototype, {
     toggleCategoryValue(sectionId, valueId) {
         const category = this.sections.get(sectionId);
         category.activeValueId = valueId;
+        const value = category.values.get(valueId);
+        if (value.childrenIds.length > 0) {
+            // Add the children to the list of elements to fetch
+            category.displayedElements = category.displayedElements.concat(value.childrenIds);
+            // Create temporary values for them so that the template rendering doesn't create issues while it reloads
+            for (const childId of value.childrenIds) {
+                if (!category.values.has(childId)) {
+                    category.values.set(childId, new Object({
+                        id: childId,
+                        display_name: "Loading...",
+                        parent_id: valueId,
+                        parentId: valueId,
+                        childrenIds: [],
+                    }))
+                }
+            }
+        }
         this._notify();
     },
 
@@ -89,7 +106,6 @@ patch(SearchModel.prototype, {
      */
     async _fetchSections(categoriesToLoad, filtersToLoad) {
         await this._fetchCategoriesCustom(categoriesToLoad);
-        console.log("ALL CATEGORIES: ", this.categories);
         await this._fetchFilters(filtersToLoad);
         this.searchPanelInfo.loaded = true;
     },
@@ -144,16 +160,22 @@ patch(SearchModel.prototype, {
                 });
             // Unwrap values
             let { error_msg, values, rootIds } = result;
-            console.log("Fetch Tree category: ", result);
             // Assign them to the category
             if (error_msg) {
                 treeCategory.errorMsg = error_msg;
                 values = [];
             }
-            if (values.length > 0) {
-                treeCategory.values = values;
+            const valuesMap = new Map();
+            for (let property in values) {
+                if (values.hasOwnProperty(property)) {
+                    valuesMap.set(values[property][1].id, values[property][1])
+                }
             }
+            treeCategory.values = valuesMap;
             treeCategory.rootIds = rootIds;
+            if (treeCategory.displayedElements.length === 0) {
+                treeCategory.displayedElements = rootIds;
+            }
         }
 
         for (const treeCategory of treeCategories) {
@@ -163,7 +185,7 @@ patch(SearchModel.prototype, {
                 treeCategory.displayedElements = [];
             }
             // 0 is the value corresponding to the "All" default selection
-            if (!Object.hasOwn(treeCategory, "activeValueId")) {
+            if (!Object.hasOwn(treeCategory, "activeValueId") || !Number.isInteger(treeCategory.activeValueId)) {
                 treeCategory.activeValueId = 0;
             }
             // Update category values
