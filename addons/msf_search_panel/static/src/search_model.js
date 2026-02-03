@@ -81,7 +81,7 @@ patch(SearchModel.prototype, {
         const value = category.values.get(valueId);
         if (value.childrenIds.length > 0) {
             // Add the children to the list of elements to fetch
-            category.displayedElements = category.displayedElements.concat(value.childrenIds);
+            category.fetchElements = value.childrenIds;
             // Create temporary values for them so that the template rendering doesn't create issues while it reloads
             for (const childId of value.childrenIds) {
                 if (!category.values.has(childId)) {
@@ -148,7 +148,7 @@ patch(SearchModel.prototype, {
         async function _fetchTreeCategory(searchModel, treeCategory) {
             const result = await searchModel.orm.call(searchModel.resModel, "search_panel_select_range_hierarchy",
                 [treeCategory.fieldName], {
-                    displayed_ids: treeCategory.displayedElements,
+                    fetch_ids: treeCategory.fetchElements,
                     search_domain: searchDomain,
                     filter_domain: filterDomain,
                     category_domain: searchModel._getCategoryDomain(treeCategory.id),
@@ -165,24 +165,26 @@ patch(SearchModel.prototype, {
                 treeCategory.errorMsg = error_msg;
                 values = [];
             }
-            const valuesMap = new Map();
+            let valuesMap = new Map();
+            if (Object.hasOwn(treeCategory, "values")) {
+                valuesMap = treeCategory.values;
+            }
             for (let property in values) {
-                if (values.hasOwnProperty(property)) {
+                if (Object.hasOwn(values, property)) {
                     valuesMap.set(values[property][1].id, values[property][1])
                 }
             }
             treeCategory.values = valuesMap;
+            
             treeCategory.rootIds = rootIds;
-            if (treeCategory.displayedElements.length === 0) {
-                treeCategory.displayedElements = rootIds;
-            }
+            treeCategory.fetchElements = [];
         }
 
         for (const treeCategory of treeCategories) {
             // Set default category values
-            // Add displayedElements list property if newly created category
-            if (!Object.hasOwn(treeCategory, "displayedElements")) {
-                treeCategory.displayedElements = [];
+            // Add fetchElements list property if newly created category
+            if (!Object.hasOwn(treeCategory, "fetchElements")) {
+                treeCategory.fetchElements = [];
             }
             // 0 is the value corresponding to the "All" default selection
             if (!Object.hasOwn(treeCategory, "activeValueId") || !Number.isInteger(treeCategory.activeValueId)) {
@@ -208,7 +210,6 @@ patch(SearchModel.prototype, {
             category.errorMsg = error_msg;
             values = [];
         }
-        console.log("Create categ tree: ", sectionId, result);
         if (category.hierarchize) {
             category.parentField = parentField;
         }
