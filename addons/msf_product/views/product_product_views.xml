@@ -262,8 +262,18 @@
                 <field name="nomen_manda_1" />
                 <field name="nomen_manda_2" />
                 <field name="nomen_manda_3" />
+                <field name="code" />
+                <field name="old_code" />
+                <field name="new_code" />
+                <field name="msfid" />
+                <separator/>
+                <filter string="Creation date" name="filter_create_date" date="create_date"/>
+                <filter string="UF Creation date" name="filter_uf_create_date" date="uf_create_date"/>
+                <filter string="UF Write date" name="filter_uf_write_date" date="uf_write_date"/>
                 <searchpanel>
-                    <field string="Nomenclature" name="nomen_manda_3" icon="fa-users" limit="0" enable_counters="1" expand="1"/>
+                    <field string="Nomenclature" name="nomen_manda_3" icon="fa-users" limit="0" enable_counters="1" expand="0"/>
+                    <field string="Type" name="type" select="multi"/>
+                    <field string="Sub-type" name="subtype" select="multi"/>
                 </searchpanel>
                 <group>
                     <filter string="Main Type" name="group_by_main_type" context="{'group_by': 'nomen_manda_0'}"/>
