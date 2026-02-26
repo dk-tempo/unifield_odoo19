@@ -236,7 +236,6 @@
                 <!-- Fields -->
                 <field name="default_code" />
                 <field name="name"/>
-                <field name="description" />
                 <field name="uom_id" />
                 <field name="qty_available" />
                 <field name="virtual_available" />

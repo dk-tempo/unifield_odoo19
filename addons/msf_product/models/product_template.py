@@ -22,7 +22,7 @@ class ProductTemplate(models.Model):
     name = fields.Char(string="Description", translate=True, size=128, required=True)
     product_manager = fields.Many2one(string="Product Manager", comodel_name="res.users",
                                       help="This is use as task responsible")
-    description = fields.Text(string="Description", translate=True)
+    description = fields.Text(string="Description full text", translate=True)
     description_purchase = fields.Text(string="Purchase Description", translate=True)
     description_sale = fields.Text(string="Sale Description", translate=True)
     type = fields.Selection(string="Product Type",
@@ -52,7 +52,7 @@ class ProductTemplate(models.Model):
     standard_price = fields.Monetary(string="Cost Price", required=True,
                                   help="Price of product calculated according to the selected costing method.",
                                   default=1, currency_field="currency_id")
-    currency_id = fields.Many2one(string="Currency", comodel_name="res.currency", readonly=True,
+    currency_id = fields.Many2one(string="Currency (cost price)" , comodel_name="res.currency", readonly=True,
                                   default=lambda self: self.env.company.currency_id)
     finance_price = fields.Monetary(string="Finance Cost Price", readonly=True, currency_field="finance_price_currency_id")
     finance_price_currency_id = fields.Many2one(readonly=True, compute="_get_finance_price_currency_id",
@@ -60,7 +60,7 @@ class ProductTemplate(models.Model):
     list_price = fields.Monetary(string="Sale Price", compute="_get_list_price", store=True, readonly=True,
                               help="Base price for computing the customer price. Sometimes called the catalog price.",
                               default=1, currency_field="field_currency_id")
-    field_currency_id = fields.Many2one(string="Currency", comodel_name="res.currency", readonly=True,
+    field_currency_id = fields.Many2one(string="Currency (field price)", comodel_name="res.currency", readonly=True,
                                         default=lambda self: self.env.company.currency_id)
     volume = fields.Float(string="Volume", digits=(16, 5), help="The volume in dm3.")
     volume_updated = fields.Boolean(string="Volume updated (deprecated)", readonly=True, default=False)
@@ -154,26 +154,7 @@ class ProductTemplate(models.Model):
     nomen_sub_3 = fields.Many2one(string="Sub Class 4", comodel_name="product.nomenclature")
     nomen_sub_4 = fields.Many2one(string="Sub Class 5", comodel_name="product.nomenclature")
     nomen_sub_5 = fields.Many2one(string="Sub Class 6", comodel_name="product.nomenclature")
-    nomen_manda_0_s = fields.Many2one(string="Main Type", compute="_get_nomen_s", search="_search_nomen_s",
-                                      comodel_name="product.nomenclature", readonly=True)
-    nomen_manda_1_s = fields.Many2one(string="Group", compute="_get_nomen_s", search="_search_nomen_s",
-                                      comodel_name="product.nomenclature", readonly=True)
-    nomen_manda_2_s = fields.Many2one(string="Family", compute="_get_nomen_s", search="_search_nomen_s",
-                                      comodel_name="product.nomenclature", readonly=True)
-    nomen_manda_3_s = fields.Many2one(string="Root", compute="_get_nomen_s", search="_search_nomen_s",
-                                      comodel_name="product.nomenclature", readonly=True)
-    nomen_sub_0_s = fields.Many2one(string="Sub Class 1", compute="_get_nomen_s", search="_search_nomen_s",
-                                    comodel_name="product.nomenclature", readonly=True)
-    nomen_sub_1_s = fields.Many2one(string="Sub Class 2", compute="_get_nomen_s", search="_search_nomen_s",
-                                    comodel_name="product.nomenclature", readonly=True)
-    nomen_sub_2_s = fields.Many2one(string="Sub Class 3", compute="_get_nomen_s", search="_search_nomen_s",
-                                    comodel_name="product.nomenclature", readonly=True)
-    nomen_sub_3_s = fields.Many2one(string="Sub Class 4", compute="_get_nomen_s", search="_search_nomen_s",
-                                    comodel_name="product.nomenclature", readonly=True)
-    nomen_sub_4_s = fields.Many2one(string="Sub Class 5", compute="_get_nomen_s", search="_search_nomen_s",
-                                    comodel_name="product.nomenclature", readonly=True)
-    nomen_sub_5_s = fields.Many2one(string="Sub Class 6", compute="_get_nomen_s", search="_search_nomen_s",
-                                    comodel_name="product.nomenclature", readonly=True)
+
     archived_nomenclature = fields.Boolean(string="Archived Nomenclature", compute="_get_archived_nomenclature",
                                            search="_search_archived_nomenclature", readonly=True)
     nomenclature_description = fields.Char(string="Nomenclature", size=1024)

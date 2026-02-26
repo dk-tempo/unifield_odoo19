@@ -7,7 +7,7 @@ class ProductCategory(models.Model):
     _parent_name = "parent_id"
 
     name = fields.Char(string="Name", translate=True, size=64, required=True)
-    complete_name = fields.Char(string="Name", compute="_name_get_fnc", readonly=True)
+    complete_name = fields.Char(string="Full Name", compute="_name_get_fnc", readonly=True)
     parent_id = fields.Many2one(string="Parent Category", comodel_name="product.category")
     child_id = fields.One2many(string="Child Categories", comodel_name="product.category", inverse_name="parent_id")
     sequence = fields.Integer(string="Sequence",

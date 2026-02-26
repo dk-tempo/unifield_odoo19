@@ -16,6 +16,7 @@ This is the base module for managing Units of measure.
         'security/ir.model.access.csv',
         'views/uom_uom_views.xml',
     ],
+    'author': 'MSF, TeMPO Consulting',
     'installable': True,
     'license': 'LGPL-3',
 }

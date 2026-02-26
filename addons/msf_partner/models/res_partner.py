@@ -183,9 +183,9 @@ class ResPartner(models.Model):
     #                                 readonly=True)
     catalogue_bool = fields.Char(string="Catalogue", compute="_get_bool_cat", readonly=True)
     leadtime = fields.Integer(string="Lead Time", default=2, )
-    filter_for_third_party = fields.Char(string="Internal Field", compute="_get_fake", search="_search_fake",
+    filter_for_third_party = fields.Char(string="Internal Field to filter partner on finance entries", compute="_get_fake", search="_search_fake",
                                          readonly=True)
-    filter_for_third_party_in_advance_return = fields.Char(string="Internal Field", compute="_get_fake",
+    filter_for_third_party_in_advance_return = fields.Char(string="Internal Field to filter partner on advance return", compute="_get_fake",
                                                            search="_search_filter_third", readonly=True)
     available_for_dpo = fields.Boolean(string="Available for DPO (used on FO line)", compute="_get_available_for_dpo",
                                        search="_src_available_for_dpo", readonly=True)
@@ -193,7 +193,7 @@ class ResPartner(models.Model):
                                          search="_search_available_on_po_dpo", readonly=True)
     check_partner = fields.Boolean(string="Check Partner Type", compute="_get_fake", search="_check_partner_type",
                                    readonly=True)
-    check_partner_rfq = fields.Boolean(string="Check Partner Type", compute="_get_fake",
+    check_partner_rfq = fields.Boolean(string="Check Partner Type on RFQ", compute="_get_fake",
                                        search="_check_partner_type_rfq", readonly=True)
     check_partner_ir = fields.Boolean(string="Check Partner Type On IR", compute="_get_fake",
                                       search="_check_partner_type_ir", readonly=True)

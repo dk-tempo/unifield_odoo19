@@ -147,7 +147,7 @@
                                 </group>
                                 <group string="Customer Credit">
                                     <field name="credit"/>
-                                    <field name="credit_limit" groups="base.group_extended"/>
+                                    <field name="credit_limit" />
                                 </group>
                                 <group string="Supplier Debit">
                                     <field name="debit"/>

@@ -5,7 +5,7 @@ class ProductProduct(models.Model):
     _name = "product.product"
     _description = "Product"
     _inherits = {'product.template': 'product_tmpl_id'}
-    _order = 'default_code,name_template'
+    _order = 'default_code, name, id'
 
     qty_available = fields.Float(string="Real Stock", compute="_product_available", digits=(16, 3), readonly=True,
                                  help="Current quantities of products in selected locations or all internal if none have been selected.")
@@ -32,7 +32,7 @@ class ProductProduct(models.Model):
     price_extra = fields.Float(string="Variant Price Extra", digits=(16, 2), default=0.0)
     price_margin = fields.Float(string="Variant Price Margin", digits=(16, 2), default=1.0)
     # pricelist_id = fields.Many2one(string="Pricelist", comodel_name="product.pricelist")
-    name_template = fields.Char(related="product_tmpl_id.name")
+    name_template = fields.Char(related="product_tmpl_id.name", string="Description (deprecated)")
     expected_prod_creator = fields.Boolean(string="Expected Product Creator for Product Mass Update",
                                            compute="_get_expected_prod_creator", search="_expected_prod_creator_search",
                                            readonly=True)
@@ -133,7 +133,7 @@ class ProductProduct(models.Model):
                                         selection=[('', ''), ('I', 'Class I (General controls)'),
                                                    ('II', 'Class II (General control with special controls)'),
                                                    ('III', 'Class III (General controls and premarket)')])
-    manufacturer_txt = fields.Text(string="Manufacturer")
+    manufacturer_txt = fields.Text(string="Manufacturer (full text)")
     manufacturer_ref = fields.Char(string="Manufacturer Ref.", size=1024)
     closed_article = fields.Selection(string="Closed Article",
                                       selection=[('yes', 'Yes'), ('no', 'No'), ('recommanded', 'Recommended')],
