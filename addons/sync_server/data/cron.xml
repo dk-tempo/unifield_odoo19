@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+    <data>
+
+		<record id="ir_cron_save_puller_cache" model="ir.cron">
+			<field name="name">Save Pullers Cache</field>
+			<field eval="True" name="active"/>
+			<field ref="base.user_root" name="user_id"/>
+			<field name="interval_number">3</field>
+			<field name="interval_type">minutes</field>
+			<field name="numbercall">-1</field>
+			<field eval="False" name="doall"/>
+			<field name="model">sync.server.update</field>
+			<field name="function">_save_puller</field>
+            <field eval="'(None,)'" name="args" />
+			<field name="priority">1</field>
+		</record>
+
+        <record forcecreate="True" id="ir_cron_alert_instances_not_sync" model="ir.cron">
+            <field name="name">Email Alert Not Sync</field>
+            <field eval="True" name="active"/>
+            <field name="user_id" ref="base.user_root"/>
+            <field name="interval_number">24</field>
+            <field name="interval_type">hours</field>
+            <field name="numbercall">-1</field>
+            <field eval="False" name="doall"/>
+            <field name="model">sync.server.monitor.email</field>
+            <field name="function">check_not_sync</field>
+        </record>
+
+
+	</data>
+</openerp>
+

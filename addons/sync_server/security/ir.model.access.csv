@@ -1,0 +1,8 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+sync_server.access_sync_server_group_type,access_sync_server_group_type,sync_server.model_sync_server_group_type,base.group_user,1,0,0,0
+sync_server.access_sync_server_entity_activity,access_sync_server_entity_activity,sync_server.model_sync_server_entity_activity,base.group_user,1,0,0,0
+sync_server.access_sync_server_version,access_sync_server_version,sync_server.model_sync_server_version,base.group_user,1,0,0,0
+
+sync_server.access_sync_server_group_type_admin,access_sync_server_group_type,sync_server.model_sync_server_group_type,base.group_system,1,1,1,1
+sync_server.access_sync_server_entity_activity_admin,access_sync_server_entity_activity,sync_server.model_sync_server_entity_activity,base.group_system,1,1,1,1
+sync_server.access_sync_server_version_admin,access_sync_server_version,sync_server.model_sync_server_version,base.group_system,1,1,1,1

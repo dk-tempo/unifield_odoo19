@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<openerp>
+    <data>
+
+        <record id="auto_import_fnct_sync_groups" model="automated.import.function">
+            <field name="name">Import Sync. Groups</field>
+            <field name="model_id" model="ir.model" search="[('model', '=', 'sync.server.entity_group')]" />
+            <field name="method_to_call">import_data_from_csv</field>
+        </record>
+
+        <record id="auto_import_fnct_sync_group_type" model="automated.import.function">
+            <field name="name">Import Sync. Group Types</field>
+            <field name="model_id" model="ir.model" search="[('model', '=', 'sync.server.group_type')]" />
+            <field name="method_to_call">import_data_from_csv</field>
+        </record>
+
+    </data>
+</openerp>

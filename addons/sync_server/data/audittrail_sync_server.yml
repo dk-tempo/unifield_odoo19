@@ -1,0 +1,124 @@
+-
+  Track sync_server.sync_rule
+-
+  !python {model: audittrail.rule}: |
+    name = 'Sync server, sync_rule'
+    object_ids = self.pool.get('ir.model').search(cr, uid, [('model', '=', 'sync_server.sync_rule')], context=context)
+    rule_id = self.search(cr, uid, [('name', '=', name)], context=context)
+    if object_ids:
+        fields = ['included_fields', 'included_fields_set', 'active', 'applies_to_type', 'can_delete', 'direction_usb', 'direction', 'domain', 'type_id', 'model_id', 'owner_field', 'name', 'status', 'forced_values', 'sequence_number', 'handle_priority', 'master_data', 'fallback_values_sel']
+        fields_ids = self.pool.get('ir.model.fields').search(cr, uid, [('model', '=' ,'sync_server.sync_rule'), ('name', 'in', fields)], context=context)
+        vals = {'name': name,
+                'object_id': object_ids[0],
+                'domain_filter': "[]",
+                'log_write': True,
+                'log_unlink': True,
+                'log_create': True,
+                'field_ids': [(6, 0, fields_ids)],
+                }
+        if not rule_id:
+            rule_id = self.create(cr, uid, vals, context=context)
+        elif rule_id:
+            self.write(cr, uid, rule_id, vals, context=context)
+        # Subscribe to the rule
+        self.subscribe(cr, uid, rule_id)
+
+-
+  Track sync_server.message_rule
+-
+  !python {model: audittrail.rule}: |
+    name = 'Sync server, message_rule'
+    object_ids = self.pool.get('ir.model').search(cr, uid, [('model', '=', 'sync_server.message_rule')], context=context)
+    rule_id = self.search(cr, uid, [('name', '=', name)], context=context)
+    if object_ids:
+        fields = ['active', 'applies_to_type', 'arguments', 'domain', 'destination_name', 'type_id', 'remote_call', 'model_id', 'name', 'sequence_number', 'direction_usb']
+        fields_ids = self.pool.get('ir.model.fields').search(cr, uid, [('model', '=' ,'sync_server.message_rule'), ('name', 'in', fields)], context=context)
+        vals = {'name': name,
+                'object_id': object_ids[0],
+                'domain_filter': "[]",
+                'log_write': True,
+                'log_unlink': True,
+                'log_create': True,
+                'field_ids': [(6, 0, fields_ids)],
+                }
+        if not rule_id:
+            rule_id = self.create(cr, uid, vals, context=context)
+        elif rule_id:
+            self.write(cr, uid, rule_id, vals, context=context)
+        # Subscribe to the rule
+        self.subscribe(cr, uid, rule_id)
+
+-
+  Track sync_server.entity
+-
+  !python {model: audittrail.rule}: |
+    name = 'Sync server, entity'
+    object_ids = self.pool.get('ir.model').search(cr, uid, [('model', '=', 'sync.server.entity')], context=context)
+    rule_id = self.search(cr, uid, [('name', '=', name)], context=context)
+    if object_ids:
+        fields = ['name', 'email', 'state', 'children_ids', 'parent_id', 'hardware_id', 'identifier', 'email', 'version_id', 'pgversion']
+        fields_ids = self.pool.get('ir.model.fields').search(cr, uid, [('model', '=' ,'sync.server.entity'), ('name', 'in', fields)], context=context)
+        vals = {'name': name,
+                'object_id': object_ids[0],
+                'domain_filter': "[]",
+                'log_write': True,
+                'log_unlink': True,
+                'log_create': True,
+                'field_ids': [(6, 0, fields_ids)],
+                }
+        if not rule_id:
+            rule_id = self.create(cr, uid, vals, context=context)
+        elif rule_id:
+            self.write(cr, uid, rule_id, vals, context=context)
+        # Subscribe to the rule
+        self.subscribe(cr, uid, rule_id)
+
+-
+  Track sync_server.entity_group
+-
+  !python {model: audittrail.rule}: |
+    name = 'Sync server, entity_group'
+    object_ids = self.pool.get('ir.model').search(cr, uid, [('model', '=', 'sync.server.entity_group')], context=context)
+    rule_id = self.search(cr, uid, [('name', '=', name)], context=context)
+    if object_ids:
+        fields = ['entity_ids', 'name', 'type_id']
+        fields_ids = self.pool.get('ir.model.fields').search(cr, uid, [('model', '=' ,'sync.server.entity_group'), ('name', 'in', fields)], context=context)
+        vals = {'name': name,
+                'object_id': object_ids[0],
+                'domain_filter': "[]",
+                'log_write': True,
+                'log_unlink': True,
+                'log_create': True,
+                'field_ids': [(6, 0, fields_ids)],
+                }
+        if not rule_id:
+            rule_id = self.create(cr, uid, vals, context=context)
+        elif rule_id:
+            self.write(cr, uid, rule_id, vals, context=context)
+        # Subscribe to the rule
+        self.subscribe(cr, uid, rule_id)
+
+-
+  Track sync_server.group_type
+-
+  !python {model: audittrail.rule}: |
+    name = 'Sync server, group_type'
+    object_ids = self.pool.get('ir.model').search(cr, uid, [('model', '=', 'sync.server.group_type')], context=context)
+    rule_id = self.search(cr, uid, [('name', '=', name)], context=context)
+    if object_ids:
+        fields = ['name']
+        fields_ids = self.pool.get('ir.model.fields').search(cr, uid, [('model', '=' ,'sync.server.group_type'), ('name', 'in', fields)], context=context)
+        vals = {'name': name,
+                'object_id': object_ids[0],
+                'domain_filter': "[]",
+                'log_write': True,
+                'log_unlink': True,
+                'log_create': True,
+                'field_ids': [(6, 0, fields_ids)],
+                }
+        if not rule_id:
+            rule_id = self.create(cr, uid, vals, context=context)
+        elif rule_id:
+            self.write(cr, uid, rule_id, vals, context=context)
+        # Subscribe to the rule
+        self.subscribe(cr, uid, rule_id)
