@@ -135,6 +135,8 @@ class model_columns(osv.osv_memory):
                 attributes.append(('readonly', 'True'))
             if field_data.help:
                 attributes.append(('help', f'"{self.string_cleanup(field_data.help)}"'))
+            if field_data.select:
+                attributes.append(('index', True))
             if field_data._domain:
                 attributes.append(('domain', f'"{field_data._domain}"'))
             # Default values
@@ -212,8 +214,15 @@ class model_columns(osv.osv_memory):
             fields_str += ")\n"
             # Remove ", " in final attribute
             fields_str = ''.join(fields_str.rsplit(', ', 1))
+
+        model_header = []
+        for x in ('_name', '_description', '_order'):
+            if hasattr(model_obj, x) and getattr(model_obj, x):
+                model_header.append(f"{x} = '{getattr(model_obj, x)}'")
+
+
         # Add resulting field defs to return val
-        res["value"]["fields"] = fields_str
+        res["value"]["fields"] = '\n'.join(model_header) + '\n\n' + fields_str
 
         # Go over all method names discovered in field definitions to generate method placeholders
         method_placeholders_str = "# Default methods\n" if method_list["default"] else ""
