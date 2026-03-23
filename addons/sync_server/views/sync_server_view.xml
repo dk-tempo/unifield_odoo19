@@ -35,8 +35,8 @@
                     <field name="identifier"/>
                     <field name="parent_id"/>
                     <field name="instance_level"/>
-                    <field name="activity" options="{'allow_order': '1'}" /> <!-- TODO allow_sort="1"/> -->
-                    <field name="last_dateactivity" options="{'allow_order': '1'}" /> <!-- TODO allow_sort="1"/> -->
+                    <field name="activity" options="{'allow_order': '1'}" />
+                    <field name="last_dateactivity" options="{'allow_order': '1'}" />
                     <field name="date_success_sync" />
                     <field name="country_id" />
                     <field name="mission" />

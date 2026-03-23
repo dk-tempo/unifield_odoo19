@@ -27,11 +27,14 @@ class ResPartner(models.Model):
     # Selection methods
     def _lang_get(self):
         """"""
+        # TODO
+        return [('en_US', 'English')]
+
         return [('option_a', 'Option A'), ('option_b', 'Option B')]
 
     name = fields.Char(string="Name", size=128, required=True)
     legal_name = fields.Char(string="Legal Name", size=128)
-    date = fields.Date(string="Date")
+    date = fields.Date(string="Date", index=True)
     title = fields.Many2one(string="Partner Form", comodel_name="res.partner.title")
     parent_id = fields.Many2one(string="Parent Partner", comodel_name="res.partner")
     child_ids = fields.One2many(string="Partner Ref.", comodel_name="res.partner", inverse_name="parent_id")
@@ -178,7 +181,7 @@ class ResPartner(models.Model):
     allow_external_edition = fields.Boolean(string="Editable ext. partner", compute="_get_allow_external_edition",
                                             search="_search_allow_external_edition", readonly=True, default=True)
     instance_creator = fields.Char(string="Instance Creator", size=64, readonly=True,
-                                   default=_get_instance_creator)
+                                   default=_get_instance_creator, index=True)
     # catalogue_ids = fields.One2many(string="Catalogues", comodel_name="supplier.catalogue", inverse_name="partner_id",
     #                                 readonly=True)
     catalogue_bool = fields.Char(string="Catalogue", compute="_get_bool_cat", readonly=True)

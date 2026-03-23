@@ -8,7 +8,7 @@ class ProductCategory(models.Model):
 
     name = fields.Char(string="Name", translate=True, size=64, required=True)
     complete_name = fields.Char(string="Full Name", compute="_name_get_fnc", readonly=True)
-    parent_id = fields.Many2one(string="Parent Category", comodel_name="product.category")
+    parent_id = fields.Many2one(string="Parent Category", comodel_name="product.category", index=True)
     child_id = fields.One2many(string="Child Categories", comodel_name="product.category", inverse_name="parent_id")
     sequence = fields.Integer(string="Sequence",
                               help="Gives the sequence order when displaying a list of product categories.")
@@ -39,7 +39,7 @@ class ProductCategory(models.Model):
                             default=True)
     family_id = fields.Many2one(string="Family", comodel_name="product.nomenclature",
                                 domain="[('level', '=', '2'), ('type', '=', 'mandatory'), ('category_id', '=', False)]")
-    msfid = fields.Char(string="MSFID", size=128)
+    msfid = fields.Char(string="MSFID", size=128, index=True)
 
     # Compute methods
     def _name_get_fnc(self):

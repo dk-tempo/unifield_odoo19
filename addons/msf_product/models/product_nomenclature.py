@@ -21,14 +21,14 @@ class ProductNomenclature(models.Model):
     parent_path = fields.Char(index=True)
     complete_name = fields.Char(string="Full name", compute="_name_get_fnc", search="_search_complete_name",
                                 readonly=True)
-    parent_id = fields.Many2one(string="Parent Nomenclature", comodel_name="product.nomenclature")
+    parent_id = fields.Many2one(string="Parent Nomenclature", comodel_name="product.nomenclature", index=True)
     child_id = fields.One2many(string="Child Nomenclatures", comodel_name="product.nomenclature",
                                inverse_name="parent_id")
-    sequence = fields.Integer(string="Sequence",
+    sequence = fields.Integer(string="Sequence", index=True,
                               help="Gives the sequence order when displaying a list of product nomenclatures.",
                               default=0)
-    level = fields.Integer(string="Level", compute="_compute_level", store=True, recursive=True)
-    type = fields.Selection(string="Nomenclature Type",
+    level = fields.Integer(string="Level", compute="_compute_level", store=True, recursive=True, index=True)
+    type = fields.Selection(string="Nomenclature Type", index=True,
                             selection=[('mandatory', 'Mandatory'), ('optional', 'Optional')],
                             default='mandatory')
     sub_level = fields.Selection(string="Sub-Level",
@@ -47,7 +47,7 @@ class ProductNomenclature(models.Model):
                                       comodel_name="product.nomenclature", readonly=True)
     nomen_manda_3_s = fields.Many2one(string="Root", compute="_get_nomen_s", search="_search_nomen_s",
                                       comodel_name="product.nomenclature", readonly=True)
-    msfid = fields.Char(string="MSFID", size=128)
+    msfid = fields.Char(string="MSFID", size=128, index=True)
     status = fields.Selection(string="Status", selection=[('valid', 'Valid'), ('archived', 'Archived')], readonly=True,
                               default="valid")
 
