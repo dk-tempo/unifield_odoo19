@@ -17,7 +17,7 @@ class MonitorLogger(object):
         self.cr = db_registry.cursor()
         self.env = api.Environment(self.cr, SUPERUSER_ID, {})
         self.monitor = self.env.get('sync.monitor')
-        self.cr._cnx.autocommit = True
+        #self.cr._cnx.autocommit = True
         self.info = {
             'status' : 'in-progress',
             'data_pull' : 'null',

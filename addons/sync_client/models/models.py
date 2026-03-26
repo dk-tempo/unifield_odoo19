@@ -544,7 +544,11 @@ SELECT res_id, touched
     @api.model
     def clear_synchronization(self, ids):
         self._after_update_send(ids)
-        self.env['ir.model.data'].search([('module', '=', 'sd'), ('id', 'in', ids)]).write({'force_recreation':False,'touched':False})
+        self.env['ir.model.data'].search([
+            ('module', '=', 'sd'),
+            ('res_id', 'in', ids),
+            ('model', '=', self._name)
+        ]).write({'force_recreation':False, 'touched':False})
         return True
 
     @api.model

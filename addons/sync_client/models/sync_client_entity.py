@@ -22,7 +22,7 @@ from odoo.addons.sync_common.models.common import get_md5, check_md5
 MAX_EXECUTED_UPDATES = 500
 MAX_EXECUTED_MESSAGES = 500
 
-
+_logger = logging.getLogger('sync.client')
 class SkipStep(Exception):
     pass
 
@@ -46,25 +46,27 @@ class AdminLoginException(Exception):
 
 """
 
-"""
-TODO
 class BackgroundProcess(Thread):
 
-    def __init__(self, cr, uid, method, context=None):
+    def __init__(self, env, method):
         super(BackgroundProcess, self).__init__()
-        self.context = context
-        self.uid = uid
-        self.db, pool = pooler.get_db_and_pool(cr.dbname)
+        sync_cursor =  Registry(env.cr.dbname).cursor()
+        self.new_env = api.Environment(sync_cursor, SUPERUSER_ID, env.context)
         connected = True
         try:
+            """
             chk_tz_msg = check_tz()
             if chk_tz_msg:
                 raise ValidationError(chk_tz_msg)
-            entity = pool.get('sync.client.entity')
+            """
+            entity = self.new_env.get('sync.client.entity')
             # Lookup method to call
             self.call_method = getattr(entity, method)
             # Check if we are not already syncing
             entity.is_syncing(raise_on_syncing=True)
+
+            """
+            # TODO
             # Check if connection is up
             connection_obj = pool.get('sync.client.sync_server_connection')
             try:
@@ -88,9 +90,12 @@ class BackgroundProcess(Thread):
                     if not automatic_patching:
                         cr.commit()
                         raise osv.except_osv(_('Error!'), _(up_to_date[1]))
+            """
         except BaseException as e:
-            logger = pool.get('sync.monitor').get_logger(cr, uid, context=context)
+            logger = env.get('sync.monitor').get_logger()
             logger.switch('status', 'failed')
+            """
+            # TODO
             if not connected:
                 if context is None:
                     context = {}
@@ -101,55 +106,44 @@ class BackgroundProcess(Thread):
                 except osv.except_osv as f:
                     logger.append(f.value)
                 del context['logger']
-            if isinstance(e, osv.except_osv):
-                logger.append(e.value)
-                raise
-            else:
-                error = "%s: %s" % (e.__class__.__name__, e)
-                logger.append(error)
-                raise osv.except_osv(_('Error!'), error)
+            """
+            logger.append(e.message)
+            raise
 
     def run(self):
-    
-        import traceback
-        traceback.print_stack()
-        cr = self.db.cursor()
         try:
-            self.call_method(cr, self.uid, context=self.context)
-            cr.commit()
-        except:
-            pass
+            self.call_method()
+            self.new_env.cr.commit()
+        except Exception as e:
+            _logger.warning(e)
         finally:
             # TODO True cr.close(True)
-            cr.close()
-"""
+            self.new_env.cr.close()
 
-def sync_subprocess(step='status', defaults_logger={}):
+def sync_subprocess(step='status', defaults_logger=None):
     def decorator(fn):
 
         @functools.wraps(fn)
-        def wrapper(self, cr, uid, *args, **kwargs):
-            context = kwargs['context'] = kwargs.get('context') is not None and dict(kwargs.get('context', {})) or {}
-            logger = context.get('logger')
+        def wrapper(self, *args, **kwargs):
+            logger = self.env.context.get('logger')
             logger.switch(step, 'in-progress')
             logger.write()
             try:
+                """
+                TODO
                 chk_tz_msg = check_tz()
                 if chk_tz_msg:
                     raise BaseException(chk_tz_msg)
                 patch_failed = check_patch_scripts(cr, uid, context=context)
                 if patch_failed:
                     raise BaseException(patch_failed)
-
-                res = fn(self, self.sync_cursor, uid, *args, **kwargs)
-            except osv.except_osv:
-                logger.switch(step, 'failed')
-                raise
+                """
+                res = fn(self, *args, **kwargs)
             except BaseException as e:
                 # Handle aborting of synchronization
                 if isinstance(e, OperationalError) and str(e) == 'Unable to use the cursor after having closed it':
                     logger.switch(step, 'aborted')
-                    self.sync_cursor = None
+                    #self.sync_cursor = None
                     raise
                 logger.switch(step, 'failed')
                 error = "%s: %s" % (e.__class__.__name__, getattr(e, 'message', e))
@@ -164,6 +158,7 @@ def sync_subprocess(step='status', defaults_logger={}):
                 # gotcha!
                 logger.write()
             return res
+        wrapper._api_model = True
         return wrapper
     return decorator
 
@@ -183,12 +178,13 @@ def sync_process(step='status', need_connection=True, defaults_logger=None):
             # First, check if we can acquire the lock or return False
             #if not self.sync_lock.acquire(blocking=False):
             #    raise already_syncing_error
+            #if not self.env.context.get('logger') and not (try_lock := self.env['sync.client.entity']._try_lock()):
             if not (try_lock := self.env['sync.client.entity']._try_lock()):
                 raise already_syncing_error
 
             # Lock is acquired, so don't put any code outside the try...catch!!
             res = False
-            context = dict(self.env.context)
+            context = self.env.context
             try:
                 # more information to the logger
                 def add_information(logger):
@@ -199,14 +195,17 @@ def sync_process(step='status', need_connection=True, defaults_logger=None):
                 # get the logger
                 logger = context.get('logger')
                 make_log = logger is None
+                sync_cursor = None
                 # we have to make the log
                 if make_log:
                     # get a whole new logger from sync.monitor object
                     logger = self.env.get('sync.monitor').get_logger(defaults_logger)
-                    self.with_context(logger=logger, log_sale_purchase=True)
+                    self = self.with_context(logger=logger, log_sale_purchase=True)
 
                     # create a specific cursor for the call
-                    sync_cursor =  Registry(self.env.cr.dbname).cursor()
+                    #sync_cursor =  Registry(self.env.cr.dbname).cursor()
+                    #print('CREATE CURSOR', sync_cursor)
+                    #self.env = api.Environment(sync_cursor, SUPERUSER_ID, self.env.context)
 
                     if need_connection:
                         # Check if connection is up
@@ -259,9 +258,8 @@ def sync_process(step='status', need_connection=True, defaults_logger=None):
                 # ah... we can now call the function!
                 logger.switch(step, 'in-progress')
                 logger.write()
-                self.env = api.Environment(sync_cursor, SUPERUSER_ID, {})
                 res = fn(self, *args, **kwargs)
-                sync_cursor.commit()
+                self.env.cr.commit()
 
                 # is the synchronization finished?
                 if need_connection and make_log:
@@ -516,8 +514,6 @@ class SyncClientEntity(models.Model):
     def get_uuid(self):
         return self.get_entity().identifier
 
-
-
     @api.model
     def get_model_white_list(self):
         # todo
@@ -599,7 +595,7 @@ class SyncClientEntity(models.Model):
             Push Update
         """
         if self.env.context.get('lang') != 'en_US':
-            self = self.with_context({'lang': 'en_US'})
+            self = self.with_context(lang='en_US')
 
         if not self.env.is_superuser():
             self = self.sudo()
@@ -630,8 +626,7 @@ class SyncClientEntity(models.Model):
                 self._logger.info(_("Push data :: New server's sequence number: %s") % server_sequence)
         return True
 
-    #@sync_subprocess('data_push_create')
-    @api.model
+    @sync_subprocess('data_push_create')
     def create_update(self):
         """
         TODO
@@ -645,15 +640,13 @@ class SyncClientEntity(models.Model):
                 logger = self.env.context.get('logger')
                 updates = self.env.get(self.env.context.get('update_to_send_model', 'sync.client.update_to_send'))
 
-                def prepare_update(session):
-                    updates_count = 0
-                    for rule_id in self.env.get('sync.client.rule').search([('type', '!=', 'USB')]):
-                        updates_count += sum(updates.create_update(rule_id, session))
-                    return updates_count
 
                 entity = self.get_entity()
                 session = str(uuid.uuid1())
-                updates_count = prepare_update(session)
+                updates_count = 0
+                for rule_id in self.env.get('sync.client.rule').search([('type', '!=', 'USB')]):
+                    updates_count += sum(updates.create_update(rule_id, session))
+
                 if updates_count > 0:
                     entity.write({'session_id' : session})
                 self.env.cr.commit()
@@ -686,8 +679,7 @@ class SyncClientEntity(models.Model):
                 raise
 
 
-    #@sync_subprocess('data_push_send')
-    @api.model
+    @sync_subprocess('data_push_send')
     def send_update(self):
         logger = self.env.context.get('logger')
         updates = self.env.get(self.env.context.get('update_to_send_model', 'sync.client.update_to_send'))
@@ -887,7 +879,8 @@ class SyncClientEntity(models.Model):
         """
             Pull update
         """
-        self = self.with_context({'lang': 'en_US'})
+        if self.env.context.get('lang') != 'en_US':
+            self = self.with_context(lang='en_US')
         logger = self.env.context.get('logger')
         entity = self.get_entity()
         if entity.state not in ('init', 'update_pull'):
@@ -927,8 +920,7 @@ class SyncClientEntity(models.Model):
             raise Exception(res[1])
         return True
 
-    #@sync_subprocess('data_pull_receive')
-    @api.model
+    @sync_subprocess('data_pull_receive')
     def retrieve_update(self, max_packet_size, recover=False):
         logger = self.env.context.get('logger')
         updates = self.env.get(self.env.context.get('update_received_model', 'sync.client.update_received'))
@@ -1031,8 +1023,7 @@ class SyncClientEntity(models.Model):
 
         return updates_count
 
-    #@sync_subprocess('data_pull_execute')
-    @api.model
+    @sync_subprocess('data_pull_execute')
     def execute_updates(self):
         logger = self.env.context.get('logger')
         updates = self.env.get(self.env.context.get('update_received_model', 'sync.client.update_received'))
@@ -1272,16 +1263,14 @@ class SyncClientEntity(models.Model):
                 logger.update_sale_purchase_logger()
         return messages_count
 
-    def sync_threaded(self, cr, uid, recover=False, context=None):
+    @api.model
+    def sync_threaded(self, recover=False):
         """
             SYNC process : usefull for scheduling
         """
-        if context is None:
-            context = {}
-        context['sync_type'] = 'automatic'
-        BackgroundProcess(cr, uid,
-                          ('sync_recover_withbackup' if recover else 'sync_withbackup'),
-                          context).start()
+        self = self.with_context(sync_type='automatic')
+        BackgroundProcess(self.env, 'sync').start()
+        #BackgroundProcess(('sync_recover_withbackup' if recover else 'sync_withbackup')).start()
         return True
 
     def sync_manual_threaded(self, cr, uid, recover=False, context=None):
@@ -1336,19 +1325,22 @@ class SyncClientEntity(models.Model):
         return {'type': 'ir.actions.act_window_close'}
 
     @sync_process()
-    def sync(self, cr, uid, context=None):
-        if context is None:
-            context = {}
+    def sync(self):
+        """
+        TODO
         # is sync modules installed ?
         for sql_table, module in [('sync_client.version', 'update_client'),
                                   ('so.po.common', 'sync_so')]:
             if not self.env.get(sql_table):
                 raise ValidationError("%s module is not installed ! You need to install it to be able to sync." % module)
+        """
         # US_394: force synchronization lang to en_US
-        context['lang'] = 'en_US'
-        logger = context.get('logger')
+        self = self.with_context(lang='en_US')
+        logger = self.env.context.get('logger')
         self._logger.info("Start synchronization")
 
+        """
+        TODO
         version_instance_module = self.env.get('sync.version.instance.monitor')
         version_data = {}
         try:
@@ -1412,13 +1404,18 @@ class SyncClientEntity(models.Model):
             logging.getLogger('version.instance.monitor').exception('Cannot generate instance monitor data')
         self.check_user_rights(cr, uid, context=context)
         self.get_surveys(cr, uid, context=context)
-        self.set_rules(cr, uid, context=context)
-        self.pull_update(cr, uid, context=context)
-        self.pull_message(cr, uid, context=context)
-        self.push_update(cr, uid, context=context)
-        self.push_message(cr, uid, context=context)
-        nb_msg_not_run = self.env.get('sync.client.message_received').search(cr, uid, [('run', '=', False)], count=True)
-        nb_data_not_run = self.env.get('sync.client.update_received').search(cr, uid, [('run', '=', False)], count=True)
+        """
+        self.set_rules()
+        self.pull_update()
+        # TODO
+        # self.pull_message()
+        self.push_update()
+        # TODO
+        # self.push_message()
+        #nb_msg_not_run = self.env.get('sync.client.message_received').search_count([('run', '=', False)])
+
+        nb_msg_not_run = 0
+        nb_data_not_run = self.env.get('sync.client.update_received').search_count([('run', '=', False)])
         if logger:
             logger.info['nb_msg_not_run'] = nb_msg_not_run
             logger.info['nb_data_not_run'] = nb_data_not_run
@@ -1426,6 +1423,8 @@ class SyncClientEntity(models.Model):
         self._logger.info('Not run updates : %d' % (nb_data_not_run, ))
         self._logger.info('Not run messages : %d' % (nb_msg_not_run, ))
         self._logger.info("Synchronization successfully done")
+        # TODO
+        """
         if self.env.get('wizard.hq.report.oca').launch_auto_export(cr, uid, context=context):
             if logger:
                 logger_index = logger.append()
@@ -1438,6 +1437,7 @@ class SyncClientEntity(models.Model):
                 logger.replace(logger_index, 'Processing Export to HQ system (OCP)')
                 logger.write()
             self._logger.info('Processing Export to HQ system (OCP)')
+        """
         return True
 
     @sync_process()
