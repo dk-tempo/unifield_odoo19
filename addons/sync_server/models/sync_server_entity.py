@@ -6,7 +6,7 @@ import psycopg2
 
 from odoo import api, fields, tools, models, _
 from odoo.exceptions import UserError, ValidationError
-
+from odoo.addons.sync_server.models.sync_server_sync_manager import check_validated
 
 
 MAX_ACTIVITY_DELAY = timedelta(minutes=5)
@@ -124,14 +124,13 @@ class Entity(models.Model):
     _name = "sync.server.entity"
     _description = "Synchronization Instance"
 
-    @api.model
-    def set_activity(self, entity, activity, wait=False):
+    def set_activity(self, activity, wait=False):
         now = fields.Datetime.now()
         try:
             if not wait:
                 self.env.cr.execute("SAVEPOINT update_entity_last_activity")
-                self.env.cr.execute('select id from sync_server_entity_activity where entity_id=%s for update nowait', (entity.id,), log_exceptions=False)
-            self.env.cr.execute('update sync_server_entity_activity set datetime=%s, activity=%s where entity_id=%s', (now, activity, entity.id))
+                self.env.cr.execute('select id from sync_server_entity_activity where entity_id=%s for update nowait', (self.id,), log_exceptions=False)
+            self.env.cr.execute('update sync_server_entity_activity set datetime=%s, activity=%s where entity_id=%s', (now, activity, self.id))
         except psycopg2.OperationalError as e:
             if not wait and e.pgcode == '55P03':
                 # can't acquire lock: ok the show must go on
@@ -238,6 +237,15 @@ class Entity(models.Model):
             return self.search([('name', '=', name)])
         return False
 
+    @check_validated
+    def end_synchronization(self, entity):
+        entity.set_activity(_('Inactive'), wait=True)
+        return (True, "Instance %s has finished the synchronization" % entity.identifier)
+
+    @check_validated
+    def set_pg_ur_version(self, entity, pg_version, current_user_rights_name):
+        entity.write({'pgversion': pg_version, 'current_user_rights_name': current_user_rights_name})
+        return True
 
     def validate_action(self):
 
@@ -539,10 +547,6 @@ class Entity(models.Model):
 
         return (True, res)
 
-    @check_validated
-    def end_synchronization(self, cr, uid, entity, context=None):
-        self.pool.get('sync.server.entity').set_activity(cr, uid, entity, _('Inactive'), wait=True)
-        return (True, "Instance %s has finished the synchronization" % entity.identifier)
 
     @check_validated
     def validate(self, cr, uid, entity, uuid_list, context=None):
@@ -586,11 +590,6 @@ class Entity(models.Model):
             deprecated replaced by set_pg_ur_version
         """
         self.write(cr, 1, entity.id, {'pgversion': pg_version}, context=context)
-        return True
-
-    @check_validated
-    def set_pg_ur_version(self, cr, uid, entity, pg_version, current_user_rights_name, context=None):
-        self.write(cr, 1, entity.id, {'pgversion': pg_version, 'current_user_rights_name': current_user_rights_name}, context=context)
         return True
 
     def validate_action(self, cr, uid, ids, context=None):

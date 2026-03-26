@@ -1,10 +1,13 @@
 # -*- coding: utf-8 -*-
 
 from psycopg2.extensions import ISOLATION_LEVEL_REPEATABLE_READ, TransactionRollbackError
+from psycopg2 import OperationalError
 from datetime import datetime, timedelta
 
-from odoo import api, fields, tools, models, _
-from odoo.exceptions import UserError, ValidationError
+from odoo import api, fields, tools, models, _, SUPERUSER_ID
+from odoo.exceptions import UserError, ValidationError, LockError
+from odoo.modules.registry import Registry
+
 import uuid
 
 from threading import Thread, RLock, Lock
@@ -42,6 +45,7 @@ class AdminLoginException(Exception):
                             )._alias_bounce_incoming_email(message, message_dict, set_invalid=True)
 
 """
+
 """
 TODO
 class BackgroundProcess(Thread):
@@ -106,6 +110,9 @@ class BackgroundProcess(Thread):
                 raise osv.except_osv(_('Error!'), error)
 
     def run(self):
+    
+        import traceback
+        traceback.print_stack()
         cr = self.db.cursor()
         try:
             self.call_method(cr, self.uid, context=self.context)
@@ -113,7 +120,8 @@ class BackgroundProcess(Thread):
         except:
             pass
         finally:
-            cr.close(True)
+            # TODO True cr.close(True)
+            cr.close()
 """
 
 def sync_subprocess(step='status', defaults_logger={}):
@@ -173,8 +181,9 @@ def sync_process(step='status', need_connection=True, defaults_logger=None):
                 raise osv.except_osv(_('Error'), chk_tz_msg)
             """
             # First, check if we can acquire the lock or return False
-            sync_lock = self.sync_lock[self.env.cr.dbname]
-            if not sync_lock.acquire(blocking=False):
+            #if not self.sync_lock.acquire(blocking=False):
+            #    raise already_syncing_error
+            if not (try_lock := self.env['sync.client.entity']._try_lock()):
                 raise already_syncing_error
 
             # Lock is acquired, so don't put any code outside the try...catch!!
@@ -191,31 +200,28 @@ def sync_process(step='status', need_connection=True, defaults_logger=None):
                 logger = context.get('logger')
                 make_log = logger is None
                 # we have to make the log
-                """
-                #TODO
-
                 if make_log:
                     # get a whole new logger from sync.monitor object
-                    context['logger'] = logger = \
-                        self.env.get('sync.monitor').get_logger(defaults_logger)
-                    context['log_sale_purchase'] = True
+                    logger = self.env.get('sync.monitor').get_logger(defaults_logger)
+                    self.with_context(logger=logger, log_sale_purchase=True)
 
                     # create a specific cursor for the call
-                    self.sync_cursor = pooler.get_db(cr.dbname).cursor()
+                    sync_cursor =  Registry(self.env.cr.dbname).cursor()
 
                     if need_connection:
                         # Check if connection is up
                         connection_obj = self.env.get('sync.client.sync_server_connection')
                         if not connection_obj.is_connected:
                             if fn.__name__ == 'sync_manual_withbackup':
-                                self.env.get('backup.config').exp_dump_for_state(cr, uid, 'beforemanualsync', context=context)
+                                self.env.get('backup.config').exp_dump_for_state('beforemanualsync')
                             # try to coonect from the file
                             try:
-                                if not connection_obj.get_connection_from_config_file(cr,
-                                                                                      uid, context=context):
+                                if not connection_obj.get_connection_from_config_file():
                                     raise osv.except_osv(_("Error!"), _("Not connected: please try to log on in the Connection Manager"))
                             except AdminLoginException as e:
-                                raise osv.except_osv(_("Error!"), _(e.value))
+                                raise
+                        """
+                        TODO
                         # Check for update (if connection is up)
                         if hasattr(self, 'upgrade'):
                             # TODO: replace the return value of upgrade to a status and raise an error on required update
@@ -240,28 +246,30 @@ def sync_process(step='status', need_connection=True, defaults_logger=None):
                                                               [upgrade_id], sync_type=context.get('sync_type', 'manual'))
                                     raise osv.except_osv(_('Sync aborted'),
                                                          _("Current synchronization has been aborted because there is update(s) to install. The sync will be restarted after update."))
-                    else:
-                        context['offline_synchronization'] = True
+                        """
                     # more information
                     add_information(logger)
+
+                """
+                TODO
                 patch_failed = check_patch_scripts(cr, uid, context=kwargs.get('context', {}))
                 if patch_failed:
-                    raise osv.except_osv(_('Error'), patch_failed)
-
+                    raise Exeption(patch_failed)
                 """
                 # ah... we can now call the function!
                 logger.switch(step, 'in-progress')
                 logger.write()
-                res = fn(self, self.sync_cursor, uid, *args, **kwargs)
-                self.sync_cursor.commit()
+                self.env = api.Environment(sync_cursor, SUPERUSER_ID, {})
+                res = fn(self, *args, **kwargs)
+                sync_cursor.commit()
 
                 # is the synchronization finished?
                 if need_connection and make_log:
-                    entity = self.get_entity(cr, uid, context=context)
-                    proxy = self.env.get("sync.client.sync_server_connection").get_connection(cr, uid, "sync.server.entity")
+                    entity = self.get_entity()
+                    proxy = self.env.get("sync.client.sync_server_connection").get_connection("sync.server.entity")
                     proxy.end_synchronization(entity.identifier, entity._hardware_id)
-                    cr.execute('SHOW server_version')
-                    result = cr.fetchone()
+                    self.env.cr.execute('SHOW server_version')
+                    result = self.env.cr.fetchone()
                     pg_version = result and result[0] or 'pgversion not found'
                     proxy.set_pg_ur_version(entity.identifier, entity._hardware_id, pg_version, entity.current_user_rights_name)
             except SkipStep:
@@ -281,7 +289,7 @@ def sync_process(step='status', need_connection=True, defaults_logger=None):
                         raise
                     else:
                         logger.switch(step, 'aborted')
-                        self.sync_cursor = None
+                        sync_cursor = None
                         raise
                 logger.switch(step, 'failed')
                 error = "%s: %s" % (e.__class__.__name__, getattr(e, 'message', e))
@@ -302,28 +310,34 @@ def sync_process(step='status', need_connection=True, defaults_logger=None):
                 try:
                     if make_log:
                         all_status = list(logger.info.values())
+                        # TODO
+                        """
                         if 'ok' in all_status and step == 'status' and logger.info.get(step) in ('failed', 'aborted') and not logger.ok_before_last_dump:
                             # ok_before_last_dump: if backup after sync fails do not generate a new backup
                             try:
-                                self.env.get('backup.config').exp_dump_for_state(cr, uid, 'after%ssync' % context.get('sync_type', 'manual'), context=context)
+                                self.env.get('backup.config').exp_dump_for_state('after%ssync' % context.get('sync_type', 'manual'), context=context)
                             except Exception as e:
                                 logger.append("Cannot create backup")
-                                self._logger.exception("Can't create backup %s" % tools.ustr(e))
+                                self._logger.exception("Can't create backup %s" % str(e))
+                        """
                 finally:
-                    sync_lock.release()
+                    pass
+                    #self.sync_lock.release()
+
                 if make_log:
                     logger.close()
-                    if self.sync_cursor is not None:
-                        self.sync_cursor.close(True)
+                    if sync_cursor is not None:
+                        # TODO sync_cursor.close(True)
+                        sync_cursor.close()
                 else:
                     logger.write()
             return res
         wrapper._api_model = True
         return wrapper
-    
+
     return decorator
 
-already_syncing_error = lambda : ValidationError(_('OpenERP can only perform one synchronization at a time - you must wait for the current synchronization to finish before you can synchronize again.'))
+already_syncing_error = ValidationError('OpenERP can only perform one synchronization at a time - you must wait for the current synchronization to finish before you can synchronize again.')
 
 def generate_new_hwid():
     '''
@@ -389,10 +403,6 @@ class SyncClientEntity(models.Model):
 
     _logger = logging.getLogger('sync.client')
 
-    renew_lock = {}
-    aborting  = {}
-    sync_lock = {}
-
     name = fields.Char(string="Instance Name", size=64, readonly=True, default=lambda self: self.env.cr.dbname)
     identifier = fields.Char(string="Identifier", size=64, readonly=True)
     oc = fields.Selection(string="Operational Center", selection=[('oca', 'OCA'), ('ocb', 'OCB'), ('ocba', 'OCBA'), ('ocg', 'OCG'), ('ocp', 'OCP'), ('waca', 'WACA'), ('ubuntu', 'UBUNTU')])
@@ -416,20 +426,24 @@ class SyncClientEntity(models.Model):
     _hardware_id = fields.Char('Hardware ID', compute="_get_hardware_id")
 
 
+    @api.model
+    def _try_lock(self):
+        self.env.cr.execute('select  pg_try_advisory_xact_lock(55545687555)')
+        return bool(self.env.cr.fetchone()[0])
+
+
     @api.constrains()
     def _entity_unique(self):
         if self.search_count([]) > 1:
             raise ValidationError( _('The Instance is unique, you cannot create a new one'))
 
-    def __init__(self, name, bases, attrs):
-        # TODO
-        #print('INIT')
-        super().__init__(name, bases, attrs)
-        if self.env.cr.dbname not in SyncClientEntity.renew_lock:
-            SyncClientEntity.renew_lock[self.env.cr.dbname] = Lock()
-        self._renew_sync_lock()
-        if self.env.cr.dbname not in SyncClientEntity.aborting:
-            SyncClientEntity.aborting[self.env.cr.dbname] = False
+
+    #def _post_model_setup__(self):
+    #    super()._post_model_setup__()
+    #    self.env.registry[self._name].renew_lock = Lock()
+    #    self._renew_sync_lock()
+    #    self.env.registry[self._name].aborting = False
+
 
     def _auto_init(self):
         super()._auto_init()
@@ -439,14 +453,14 @@ class SyncClientEntity(models.Model):
     def _get_hardware_id(self):
         self._hardware_id = get_hardware_id()
 
-    @api.model
-    def _renew_sync_lock(self):
-        if not SyncClientEntity.renew_lock[self.env.cr.dbname].acquire(False):
-            raise Exception("Can't acquire renew lock!")
-        try:
-            SyncClientEntity.sync_lock[self.env.cr.dbname] = RLock()
-        finally:
-            SyncClientEntity.renew_lock[self.env.cr.dbname].release()
+    #@api.model
+    #def _renew_sync_lock(self):
+    #    if not self.renew_lock.acquire(False):
+    #        raise Exception("Can't acquire renew lock!")
+    #    try:
+    #        self.env.registry[self._name].sync_lock = RLock()
+    #    finally:
+    #        self.renew_lock.release()
 
     @api.model
     def generate_uuid(self):
@@ -579,8 +593,7 @@ class SyncClientEntity(models.Model):
 
         return model_set
 
-    #@sync_process('data_push')
-    @api.model
+    @sync_process('data_push')
     def push_update(self):
         """
             Push Update
@@ -734,7 +747,7 @@ class SyncClientEntity(models.Model):
         #state update validate => init
         return res[1]
 
-    @api.model
+    @sync_process('set_rules')
     def set_rules(self):
         entity = self.get_entity()
         proxy = self.env.get("sync.client.sync_server_connection").get_connection("sync.server.sync_manager")
@@ -868,8 +881,8 @@ class SyncClientEntity(models.Model):
         else:
             cr.execute("RELEASE SAVEPOINT import_surveys")
 
-    #@sync_process('data_pull')
-    @api.model
+    #@api.model
+    @sync_process('data_pull')
     def pull_update(self, recover=False):
         """
             Pull update
@@ -1468,14 +1481,22 @@ class SyncClientEntity(models.Model):
 
     # Check if lock can be acquired or not
     def is_syncing(self, raise_on_syncing=False):
-        acquired = self.sync_lock[self.env.cr.dbname].acquire(blocking=False)
-        if not acquired:
+
+        if not (try_lock := self.env['sync.client.entity']._try_lock()):
             if raise_on_syncing:
                 raise already_syncing_error
             return True
-        self.sync_lock[self.env.cr.dbname].release()
-        self.aborting = False
         return False
+
+
+        #acquired = self.sync_lock.acquire(blocking=False)
+        #if not acquired:
+        #    if raise_on_syncing:
+        #        raise already_syncing_error
+        #    return True
+        #self.sync_lock.release()
+        #self.aborting = False
+        #return False
 
     def get_status(self, cr, uid, context=None):
         connection_obj = self.env.get('sync.client.sync_server_connection')
@@ -1551,7 +1572,8 @@ class SyncClientEntity(models.Model):
             self.aborting = True
             # US-2306 : before to close the cursor, clear the _get_id caches
             self.env.get('ir.model.data')._get_id.clear_cache(cr.dbname)
-            self.sync_cursor.close(True)
+            # TODO self.sync_cursor.close(True)
+            self.sync_cursor.close()
         return True
 
     def clean_updates(self, cr, uid):

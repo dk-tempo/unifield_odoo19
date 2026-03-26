@@ -18,8 +18,8 @@ class Connection(models.Model):
     _description = 'Connection to sync server information and tools'
     _order = 'id'
 
-    _uid = {}
-    _password = {}
+    _uid = None
+    _password = None
 
     active = fields.Boolean(string="Active", default=True)
     host = fields.Char(string="Host", size=256, required=True, help="Synchronization server host name", default="sync.unifield.net")
@@ -38,6 +38,10 @@ class Connection(models.Model):
     automatic_patching_hour_from = fields.Float(string="Upgrade from", help="Enable upgrade from this time")
     automatic_patching_hour_to = fields.Float(string="Upgrade until", help="Enable upgrade unitl this time")
 
+    internal_password = fields.Char(string='Internal Password', copy=False, groups=fields.NO_ACCESS)
+    internal_uid = fields.Char(string='Remote UID', copy=False, groups=fields.NO_ACCESS)
+
+
     _active = models.Constraint(
         'UNIQUE(active)',
         'The connection parameter is unique; you cannot create a new one'
@@ -49,31 +53,33 @@ class Connection(models.Model):
         if not self.search_count([]):
             self.create({})
 
+    def _post_model_setup__(self):
+        super()._post_model_setup__()
+        # TODO
+        #self.sudo().search([]).write({'internal_password': False, 'internal_uid': False})
 
     def _is_connected(self):
-        return Connection._uid.get(self.env.cr.dbname) > 0
+        return bool(self.sudo().search_fetch([], ['internal_uid']).internal_uid)
 
     is_connected = property(_is_connected)
 
     def _get_state(self):
-        r = "Connected" if Connection._uid.get(self.env.cr.dbname) else "Disconnected"
+        r = "Connected" if self._is_connected else "Disconnected"
         for s in self:
             s.state = r
 
+    @api.depends('internal_password')
     def _get_password(self):
         for s in self:
-            s.password = Connection._password.get(self.env.cr.dbname)
+            s.password = self.sudo().internal_password
 
     def _set_password(self):
-        Connection._password[self.env.cr.dbname] = self.password
+        self.sudo().internal_password = self.password
 
+    @api.depends('internal_uid')
     def _get_uid(self):
         for s in self:
-            s.uid = Connection._uid.get(self.env.cr.dbname)
-
-    def unlink(self):
-        Connection._uid[self.env.cr.dbname] = False
-        return super().unlink(self)
+            s.uid = self.sudo().search_fetch([], ['internal_uid']).internal_uid
 
     def on_change_upgrade_hour(self, cr, uid, ids, automatic_patching_hour_from, automatic_patching_hour_to):
         # TODO
@@ -158,7 +164,8 @@ class Connection(models.Model):
             raise UserError('Unknown protocol: %s' % self.protocol)
         return connector
 
-    def _info_connection_from_config_file(self, cr):
+    @api.model
+    def _info_connection_from_config_file(self):
         login = tools.config.get('sync_user_login')
         if login == 'admin':
             if not self.search_exist(cr, 1, [('host', 'in', ['127.0.0.1', 'localhost'])]):
@@ -197,8 +204,6 @@ class Connection(models.Model):
         """
         connect the instance to the SYNC_SERVER instance for synchronization
         """
-        if Connection._uid.get(self.env.cr.dbname):
-            return True
         try:
             con = self._get_connection_manager()
             sync_args = {
@@ -207,17 +212,17 @@ class Connection(models.Model):
             }
             _logger.info('Client \'%(client_name)s\' attempts to connect to sync. server \'%(server_name)s\'' % sync_args)
             connector = con.connector_factory()
-            if not Connection._password.get(self.env.cr.dbname):
-                if password is not None:
-                    Connection._password[self.env.cr.dbname] = password
-                    con.password = password
-                else:
-                    Connection._password[self.env.cr.dbname] = tools.config.get('sync_user_password', con.login)
+            if password is None:
+                password = con.sudo().internal_password
+
+            if password is None:
+                password = tools.config.get('sync_user_password')
+
             if login is None:
                 login = con.login
-            cnx = rpc.Connection(connector, con.database, login, Connection._password[self.env.cr.dbname])
+            cnx = rpc.Connection(connector, con.database, login, password)
             if cnx.user_id:
-                Connection._uid[self.env.cr.dbname] = cnx.user_id
+                con.sudo().write({'internal_password': password, 'internal_uid': cnx.user_id})
             else:
                 raise USerError("Not connected to server. Please check password and connection status in the Connection Manager")
 
@@ -256,16 +261,16 @@ class Connection(models.Model):
         return rpc.Object(cnx, model)
 
     @api.model
-    def disconnect(self, cr, uid, context=None):
+    def disconnect(self):
         con = self._get_connection_manager()
         sync_args = {
             'client_name': cr.dbname,
             'server_name': con.database,
         }
-        if not self.pool.get('sync.client.entity').interrupt_sync(cr, uid, context=context):
+        if not self.pool.get('sync.client.entity').interrupt_sync():
             _logger.warning('Error during the disconnection of client \'%(client_name)s\'' % sync_args)
             return False
-        Connection._uid[self.env.cr.dbname] = False
+        con.sudo().write({'internal_password': False, 'internal_uid': False})
         _logger.info('Client \'%(client_name)s\' succesfully disconnected from the sync. server \'%(server_name)s\'' % sync_args)
         return True
 
@@ -288,9 +293,10 @@ class Connection(models.Model):
             'xmlrpc_retry'
         ]
 
+        to_update = False
         for key in connection_property_list:
             if vals.get(key) != getattr(self, key):
-                Connection._uid[self.env.cr.dbname] = False
+                to_update = True
                 break
 
         """
@@ -329,6 +335,7 @@ class Connection(models.Model):
             except ValueError:
                 pass  # the reference don't exists
         """
+        super(Connection, self.sudo()).write({'internal_uid': False})
         return super().write(vals)
 
     def change_host(self, cr, uid, ids, host, proto, context=None):

@@ -279,6 +279,8 @@ SELECT res_id, touched
                 whole_fields+['id']
             )
             # handle one2many
+            """
+            TODO : no more needed
             o2m_fields = filter_o2m(whole_fields)
 
             # handle one2many (because orm don't call write() on them)
@@ -295,6 +297,7 @@ SELECT res_id, touched
                         data_base_values,
                         _previous_calls=_previous_calls
                     )
+            """
         else:
             # convert previous_values to a mapping id -> dict_of_values
             # check that the previous_values provided is correct
@@ -310,6 +313,8 @@ SELECT res_id, touched
                     ))
                 # UF-2272 skip model's one2many(s)
                 # handle one2many (because orm don't call write() on them)
+                """
+                TODO  no more needed ??
                 whole_fields = previous_values[res_id]
                 if synchronize:
                     for field, column in filter_o2m(whole_fields):
@@ -324,6 +329,7 @@ SELECT res_id, touched
                             data_base_values,
                             _previous_calls=_previous_calls,
                         )
+                """
 
         return True
 

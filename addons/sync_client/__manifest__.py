@@ -8,7 +8,8 @@
     'depends': ['base_setup', 'sync_common', 'mail'],
     'description': "Synchronization Engine - Client Module",
     'data': [
-        'security/ir.model.access.csv'
+        'security/ir.model.access.csv',
+        'data/ir_sequence.xml'
     ],
     'author': 'OpenERP SA, MSF, TeMPO Consulting',
     'installable': True,

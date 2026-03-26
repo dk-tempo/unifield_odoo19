@@ -238,7 +238,7 @@ class SyncServerUpdate(models.Model):
                 self.env.cr.execute("RELEASE SAVEPOINT update_creation")
             return None
 
-        self.env.get('sync.server.entity').set_activity(entity, _('Pushing updates...'))
+        entity.set_activity(_('Pushing updates...'))
 
         normal_updates_count = 0
         for update in packet['load']:
@@ -292,7 +292,7 @@ class SyncServerUpdate(models.Model):
                 b : int : sequence number given
         """
         self._logger.info("::::::::[%s] Data Push :: Confirming updates session: %s" % (entity.name, session_id))
-        self.env.get('sync.server.entity').set_activity(entity, _('Confirm updates...'))
+        entity.set_activity(_('Confirm updates...'))
 
         has_updates = self.search_count([('session_id', '=', session_id), ('source', '=', entity.id), ('sequence', '=', False)])
         sequence = False
@@ -411,7 +411,7 @@ class SyncServerUpdate(models.Model):
                      - None when no update need to be sent
                      - A dict that format a packet for the client
         """
-        self.env.get('sync.server.entity').set_activity(entity, _('Pulling updates...'))
+        entity.set_activity(_('Pulling updates...'))
         top = entity
         while top.parent_id:
             top = top.parent_id
