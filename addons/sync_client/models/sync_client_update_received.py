@@ -6,7 +6,7 @@ from odoo.exceptions import UserError, ValidationError
 import logging
 import re
 from datetime import datetime
-
+from odoo.addons.sync_common.models.common import normalize_xmlid, split_xml_ids_list
 
 class SyncClientUpdateReceived(models.Model):
 
@@ -566,7 +566,7 @@ class SyncClientUpdateReceived(models.Model):
         def check_xmlid(xmlid):
             module, sep, xmlid = xmlid.partition('.')
             assert sep, "Cannot find an xmlid without specifying its module: xmlid=%s" % module
-            return not ir_model_data_obj.is_deleted(module, xmlid)
+            return not ir_model_data_obj.m_is_deleted(module, xmlid)
 
         for i, field, value in zip(list(range(len(fields))), fields, values):
             # replace English by MSF English for the updates on partners where English had been selected at some point

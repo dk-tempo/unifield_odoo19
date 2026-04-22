@@ -1,5 +1,6 @@
 import hashlib
 import json
+import re
 
 # create an sdref on record creation but do not monitor fields changes
 SDREF_BUT_NO_TOUCH = [
@@ -184,4 +185,29 @@ def get_md5(obj):
 def check_md5(md5, data, add_info=""):
     if md5 != get_md5(data):
         raise Exception(_('Error during data transmission, checksum does not match %s') % add_info)
+
+re_xml_id = re.compile(r"(?:,|^)([^.,]+\.[^.]+)$")
+def split_xml_ids_list(string):
+    """
+    Split xml_ids string list and return a list.
+
+    Limitations:
+    - modules must not have . nor , in its name
+    - names must not have . in its name
+    """
+    result = []
+    matches = re_xml_id.search(string)
+    while matches:
+        result.insert(0, matches.group(1))
+        string = string[:-len(matches.group(0))]
+        matches = re_xml_id.search(string)
+    assert not string, "Still have a string in the list: \"%s\" remains" % string
+    return result
+
+
+def normalize_xmlid(string):
+    """
+    Try to normalize xmlid given by removing any comma.
+    """
+    return string.replace(',', '_')
 

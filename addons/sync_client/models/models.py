@@ -79,6 +79,15 @@ SELECT ARRAY_AGG(ir_model_data.id), COUNT(%(table)s.id) > 0
         record.write(vals)
         return True
 
+class IrFieldsConverter(models.AbstractModel):
+    _inherit = 'ir.fields.converter'
+
+    @api.model
+    def _str_to_boolean(self, model, field, value, savepoint):
+        if isinstance(value, bool):
+            return value, []
+        return super()._str_to_boolean(model, field, value, savepoint)
+
 class Base(models.AbstractModel):
     _inherit = 'base'
 
@@ -505,7 +514,7 @@ SELECT res_id, touched
     def get_unique_xml_name(self, uuid, table_name=None):
         self.ensure_one()
         if table_name is None:
-            table_name = self._name
+            table_name = self._table
         return uuid + '/' + table_name + '/' + str(self.id)
 
     def get_destination_name(self, dest_field, context=None):
@@ -616,6 +625,25 @@ SELECT res_id, touched
             read_result = dict((x['id'], x) for x in read_result)
             result = dict((sdref, read_result[id][real_field]) for sdref, id in list(result.items()))
         return result if result_iterable else result.get(sdrefs[0], False)
+
+    @api.model
+    def _get_id(self, module, xml_id):
+        """Returns the id of the ir.model.data record corresponding to a given module and xml_id (cached) or raise a ValueError if not found"""
+        ids = self.search([('module','=',module), ('name','=', xml_id)], limit=1)
+        if not ids:
+            raise ValueError('No references to %s.%s' % (module, xml_id))
+        # the sql constraints ensure us we have only one result
+        return ids[0]
+
+    @api.model
+    def m_is_deleted(self, module, xml_id):
+        """
+        Return True if record exists, False otherwise.
+
+        Raise ValueError if ref module.xml_id doesn't exists.
+        """
+        data = self._get_id(module, xml_id)
+        return data['is_deleted']
 
 '''
     def version(self, cr, uid, ids, context=None):
