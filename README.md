@@ -1,16 +1,5 @@
 
-# Unifield POC18
-
-## Installation
-
-Python 3.12.x recommended
-
-    $ git clone --recurse-submodules ssh://git@github.com:TeMPO-Consulting/poc18.git
-    $ cd poc18
-    $ python3 -m venv venv
-    $ source ./venv/bin/activate
-    $ cd odoo
-    $ pip install -r requirements.txt
+# Unifield POC for odoo 19
 
 ## Utils
 
