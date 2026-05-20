@@ -9,7 +9,8 @@
     'description': "Synchronization Engine - Client Module",
     'data': [
         'security/ir.model.access.csv',
-        'data/ir_sequence.xml'
+        'data/ir_sequence.xml',
+        'views/monitor_view.xml',
     ],
     'author': 'OpenERP SA, MSF, TeMPO Consulting',
     'installable': True,

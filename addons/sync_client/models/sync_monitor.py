@@ -243,7 +243,7 @@ class SyncMonitor(models.Model):
             x.my_instance = False
 
 
-    def _search_my_instance(self):
+    def _search_my_instance(self, *a, **b):
         # TODO
         return []
         """
@@ -280,9 +280,10 @@ class SyncMonitor(models.Model):
 
     """
     TODO
-    def interrupt(self, cr, uid, ids, context=None):
-        return self.pool.get('sync.client.entity').interrupt_sync(cr, uid, context=context)
     """
+
+    def interrupt(self):
+        return self.pool.get('sync.client.entity').interrupt_sync(cr, uid, context=context)
 
     def _is_syncing(self):
         is_syncing = self.env.get('sync.client.entity').is_syncing()
@@ -299,7 +300,7 @@ class SyncMonitor(models.Model):
                     max_id_state = "syncing"
         for rec in self:
             if rec.id == max_id:
-                rec.is_syncing = max_id_state
+                rec.state = max_id_state
             else:
-                rec.is_syncing = 'not_syncing'
+                rec.state = 'not_syncing'
 
