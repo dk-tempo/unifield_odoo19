@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+    <data>
+        <menuitem id="main_menu"
+             name="Synchronization - client"
+             sequence="10"
+            />
+
+        <menuitem id="mon_menu" name="Monitoring" parent="main_menu" sequence="30"/>
+        <!-- msf_III.3_Monitor_object -->
+        <record id="sync_monitor_form" model="ir.ui.view">
+            <field name="name">sync.monitor.form</field>
+            <field name="model">sync.monitor</field>
+            <field name="arch" type="xml">
+                <form edit="False" create="False" delete="False" duplicate="False" >
+                  <sheet>
+                   <div class="row">
+
+                    <field name="sequence_number" />
+                    <field name="status"/>
+                    <separator string="Synchronization date and time" />
+                    <field name="start"/>
+                    <field name="end"/>
+                    <separator string="Status details" />
+                    <field name="data_pull"/>
+                    <field name="msg_pull"/>
+                    <field name="data_push"/>
+                    <field name="msg_push"/>
+                    <newline/>
+                    <separator string="Messages" />
+                    <field name="error" nolabel="1"/>
+                    </div>
+                  </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record id="sync_monitor_tree" model="ir.ui.view">
+            <field name="name">sync.monitor.tree</field>
+            <field name="model">sync.monitor</field>
+            <field name="type">list</field>
+            <field name="arch" type="xml">
+               <list edit="False" create="False" delete="False">
+                    <field name="sequence_number"/>
+                    <field name="start" width="110px"/>
+                    <field name="end"  width="110px"/>
+                    <field name="data_pull" width="70px" /> <!-- TODO  tooltip="data_pull_enddate" /> -->
+                    <field name="data_pull_enddate" column_invisible="True" />
+                    <field name="data_pull_receive" string="receive" width="70px" /> <!-- TODO tooltip="data_pull_receive_enddate" /> -->
+                    <field name="data_pull_receive_enddate" column_invisible="True" />
+                    <field name="data_pull_execute" string="execute" width="70px" /> <!-- TODO tooltip="data_pull_execute_enddate" /> -->
+                    <field name="data_pull_execute_enddate" column_invisible="True" />
+
+                    <field name="msg_pull" width="70px" /> <!-- TODO tooltip="msg_pull_enddate"/> -->
+                    <field name="msg_pull_enddate" column_invisible="True" />
+                    <field name="msg_pull_receive" string="receive" width="70px" /> <!-- TODO tooltip="msg_pull_receive_enddate"/> -->
+                    <field name="msg_pull_receive_enddate" column_invisible="True" />
+                    <field name="msg_pull_execute" string="execute" width="70px" /> <!-- TODO tooltip="msg_pull_execute_enddate"/> -->
+                    <field name="msg_pull_execute_enddate" column_invisible="True"/>
+
+                    <field name="data_push" width="70px" /> <!-- TODO tooltip="data_push_enddate"/> -->
+                    <field name="data_push_enddate" column_invisible="True" />
+                    <field name="data_push_create" string="create" width="70px" /> <!-- TODO tooltip="data_push_create_enddate"/> -->
+                    <field name="data_push_create_enddate" column_invisible="True" />
+                    <field name="data_push_send" string="send" width="70px" /> <!-- TODO tooltip="data_push_send_enddate" /> -->
+                    <field name="data_push_send_enddate" column_invisible="True" />
+
+                    <field name="msg_push" width="70px" /> <!-- TODO tooltip="msg_push_enddate"/> -->
+                    <field name="msg_push_enddate" column_invisible="True" />
+                    <field name="msg_push_create" string="create" width="70px" /> <!-- TODO tooltip="msg_push_create_enddate" /> -->
+                    <field name="msg_push_create_enddate" column_invisible="True" />
+                    <field name="msg_push_send" string="send" width="70px" /> <!-- TODO tooltip="msg_push_send_enddate" /> -->
+                    <field name="msg_push_send_enddate" column_invisible="True" />
+
+                    <field name="status" />
+                    <field name="state"  />
+                    <button name="interrupt" type="object" string="Interrupt"  icon="gtk-cancel" invisible="state != 'syncing'" />
+                    <field name="error" />
+                </list>
+            </field>
+        </record>
+
+        <record id="sync_monitor_search" model="ir.ui.view">
+            <field name="name">sync.monitor.search</field>
+            <field name="model">sync.monitor</field>
+            <field name="arch" type="xml">
+                <search>
+                    <field name="start" />
+                    <field name="end" />
+                    <newline/>
+                    <field name="sequence_number"/>
+                    <field name="status"/>
+                    <newline/>
+                    <filter name="status_ok" string="Status Ok" domain="[('status','=','ok')]"/>
+                    <filter name="data_pull_ok" string="Data Pull Ok" domain="[('data_pull','=','ok')]"/>
+                    <filter name="msg_pull_ok" string="Msg Pull Ok" domain="[('msg_pull','=','ok')]"/>
+                    <filter name="data_push_ok" string="Data Push Ok" domain="[('data_push','=','ok')]"/>
+                    <filter name="msg_push_ok" string="Msg Push Ok" domain="[('msg_push','=','ok')]"/>
+                </search>
+            </field>
+        </record>
+
+        <record model="ir.actions.act_window" id="sync_monitor_action">
+            <field name="name">Synchronisation Monitor</field>
+            <field name="res_model">sync.monitor</field>
+            <field name="view_mode">list,form</field>
+            <field name="domain">[('my_instance', '=', True)]</field>
+        </record>
+
+        <menuitem id="sync_monitor_menu" name="Synchronisation Processes Monitor"
+            parent="mon_menu" sequence="20" action="sync_monitor_action"/>
+
+<!-- TODO
+        <record id="ir_actions_server_opensynccron0" model="ir.actions.server">
+			<field name="code">
+res = obj.pool.get('ir.model.data').get_object_reference(cr, uid, 'sync_client', 'ir_cron_automaticsynchronization0')
+action = {
+'res_model' : 'ir.cron',
+'view_type' : 'form',
+'view_mode' : 'form,list',
+'type': 'ir.actions.act_window',
+'res_id' : res[1],
+}</field>
+			<field eval="5" name="sequence"/>
+			<field name="state">code</field>
+			<field name="type">ir.actions.server</field>
+			<field name="model_id" ref="base.model_ir_cron"/>
+			<field name="condition">True</field>
+			<field name="name">Open Sync cron</field>
+		</record> 
+
+	
+		<record id="ir_ui_menu_cron_synchro" model="ir.ui.menu">
+			<field name="name">Automatic</field>
+			<field name="parent_id" ref="sync_menu"/>
+			<field name="sequence">30</field>
+		</record>
+
+		<record id="ir_values_menuitem_cron" model="ir.values">
+			<field name="name">Menuitem IR CRON</field>
+			<field name="key2">tree_but_open</field>
+			<field eval="1" name="object"/>
+			<field name="value" eval="'ir.actions.server,%s' % ref('ir_actions_server_opensynccron0')" />
+			<field name="key">action</field>
+			<field name="model">ir.ui.menu</field>
+			<field eval="ref('ir_ui_menu_cron_synchro')" name="res_id"/>
+		</record>
+-->
+    </data>
+</openerp>
