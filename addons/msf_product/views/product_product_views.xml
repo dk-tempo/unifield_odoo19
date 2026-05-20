@@ -256,12 +256,12 @@
         <field name="arch" type="xml">
             <search string="Products" >
                 <!-- Fields -->
+                <field name="default_code" />
                 <field name="name"/>
                 <field name="nomen_manda_0" />
                 <field name="nomen_manda_1" />
                 <field name="nomen_manda_2" />
                 <field name="nomen_manda_3" />
-                <field name="code" />
                 <field name="old_code" />
                 <field name="new_code" />
                 <field name="msfid" />

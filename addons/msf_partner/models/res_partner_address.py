@@ -5,7 +5,7 @@ class ResPartnerAddress(models.Model):
     _name = "res.partner.address"
     _description = "Partner Address"
 
-    partner_id = fields.Many2one(string="Partner Name", comodel_name="res.partner",
+    partner_id = fields.Many2one(string="Partner Name", comodel_name="res.partner", index=True,
                                  help="Keep empty for a private address, not related to partner.")
     type = fields.Selection(string="Address Type",
                             selection=[('default', 'Default'), ('invoice', 'Invoice'), ('delivery', 'Delivery'),
@@ -13,7 +13,7 @@ class ResPartnerAddress(models.Model):
                             help="Used to select automatically the right address according to the context in sales and purchases documents.")
     function = fields.Char(string="Function", size=64)
     title = fields.Many2one(string="Title", comodel_name="res.partner.title")
-    name = fields.Char(string="Contact Name", size=64)
+    name = fields.Char(string="Contact Name", size=64, index=True)
     street = fields.Char(string="Street", size=128)
     street2 = fields.Char(string="Street2", size=128)
     zip = fields.Char(string="Zip", size=24)
@@ -30,7 +30,7 @@ class ResPartnerAddress(models.Model):
     is_supplier_add = fields.Boolean(string="Supplier", related="partner_id.supplier", readonly=True)
     active = fields.Boolean(string="Active", help="Uncheck the active field to hide the contact.",
                             default=True)
-    company_id = fields.Many2one(string="Company", comodel_name="res.company",
+    company_id = fields.Many2one(string="Company", comodel_name="res.company", index=True,
                                  default=lambda self: self.env.company)
     office_name = fields.Char(string="Office name", size=128)
     dest_address = fields.Boolean(string="Dest. Address", compute="_get_dummy", search="_src_address", readonly=True)

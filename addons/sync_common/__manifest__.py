@@ -2,21 +2,18 @@
 # Part of Odoo. See LICENSE file for full copyright and licensing details.
 
 {
-    'name': 'Sync Server Module',
+    'name': 'Sync Module',
     'version': '1.0',
     'category': '',
-    'depends': ['sync_common', 'mail'],
+    'depends': ['base'],
     'description': """
 This is the base module for managing Units of measure.
 ========================================================================
     """,
     'data': [
-       'security/ir.model.access.csv',
-       'views/sync_server_view.xml',
-       'views/rules_view.xml',
-       'data/ir_sequence.xml',
     ],
     'author': 'MSF, TeMPO Consulting',
     'installable': True,
     'license': 'LGPL-3',
 }
+

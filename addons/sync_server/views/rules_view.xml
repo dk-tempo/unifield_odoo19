@@ -1,0 +1,297 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+    <data>
+
+        <record model="ir.ui.view" id="base.view_model_fields_tree">
+            <field name="priority">2</field>
+        </record>
+
+        <record model="ir.ui.view" id="ir_model_fields_tree_sync_rule">
+            <field name="name">ir_model_fields.tree.sync</field>
+            <field name="model">ir.model.fields</field>
+            <field name="inherit_id" ref="base.view_model_fields_tree"/>
+            <field name="priority">3</field>
+            <field name="arch" type="xml">
+                <field name="ttype" position="after">
+                    <field name="relation" />
+                    <field name="required" />
+
+                </field>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="data_rule_search_view">
+            <field name="name">date.rule.search</field>
+            <field name="model">sync_server.sync_rule</field>
+            <field name="arch" type="xml">
+                <search>
+                <!-- TODO
+                    <filter string="Active" domain="[('active','=', True)]" />
+                    <filter string="Inactive" domain="[('active','=', False)]"  />
+                    <filter string="All" name="all" domain="['|', ('active','=', False), ('active','=', True)]"  />
+                -->
+                    <field name="name" />
+                    <field name="model_id" />
+                    <field name="type_id" />
+                    <field name="master_data" />
+                    <newline />
+                    <field name="sequence_number" />
+                    <field name="can_delete" />
+                    <field name="status" />
+                    <newline />
+                <!-- TODO
+                    <group expand="0" string="Group By...">
+                        <filter string="Model" icon="gtk-preferences" domain="[]" context="{'group_by': 'model_ref'}"/>
+                        <filter string="Directionality" icon="gtk-fullscreen" domain="[]" context="{'group_by': 'direction'}"/>
+                    </group>
+                -->
+                </search>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="sync_rule_tree_view">
+            <field name="name">sync_rule.tree</field>
+            <field name="model">sync_server.sync_rule</field>
+            <field name="arch" type="xml">
+                <list string="Sync Rules Tree">
+                    <field name="active" />
+                    <field name="sequence_number"/>
+                    <field name="name"/>
+                    <field name="model_ref"/>
+                    <field name="can_delete" />
+                    <field name="handle_priority"/>
+                    <field name="applies_to_type"/>
+                    <field name="master_data" />
+                    <field name="group_id" invisible="applies_to_type"/>
+                    <field name="type_id" invisible="applies_to_type" />
+                    <field name="direction"/>
+                    <field name="owner_field"/>
+                    <field name="status"/>
+                    <field name="included_fields" invisible="1" />
+                </list>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="sync_rule_form_view">
+            <field name="name">sync_rule.form</field>
+            <field name="model">sync_server.sync_rule</field>
+            <field name="arch" type="xml">
+                <form string="Sync Rule Form">
+                    <sheet>
+                    <field name="model_id" invisible="1" />
+                    <field name="model_ids" invisible="1" />
+                    <group colspan="4" col="3">
+                        <group col="2">
+                            <separator string="Rule"/>
+                            <field name="name" nolabel="1" colspan="2" />
+                            <field name="sequence_number" on_change="invalidate(model_ref)" />
+                            <field name="model_ref" on_change="invalidate(model_ref)" required="1" />
+                        </group>
+                        <group col="4">
+                            <separator string="Settings" />
+                            <field name="active" readonly="status != 'valid'" />
+                            <field name="can_delete" />
+                            <field name="handle_priority"/>
+                            <field name="direction" on_change="invalidate(model_ref)" string="Direction"/>
+                            <field name="owner_field" on_change="invalidate(model_ref)" invisible="direction not in ['bi-private', 'mission-private', 'single-private']" required="direction in ['bi-private', 'mission-private', 'single-private']" colspan="4"/>
+                            <field name="master_data" />
+                        </group>
+                        <group col="2">
+                            <separator string="Group" />
+                            <field name="group_id" invisible="applies_to_type" required="not applies_to_type" />
+                            <field name="type_id" invisible="not applies_to_type" required="applies_to_type" widget="selection" />
+                            <field name="applies_to_type" />
+                        </group>
+                    </group>
+                    <group colspan="4" col="4">
+                        <separator string="Domain" colspan="2"/>
+                        <field name="domain" on_change="invalidate(model_ref)" colspan="2" nolabel="1"/>
+                    </group>
+                    <group colspan="4" col="4" string="Included fields (required)">
+                        <group colspan="2">
+                        <field name="included_fields_sel" nolabel="1" domain="[('model_id','in', model_ids),('ttype','not in',['one2many'])]">
+                            <list string="Included fields">
+                                <field name="name"/>
+                                <field name="field_description"/>
+                                <field name="ttype"/>
+                            </list>
+                        </field>
+                        </group>
+                        <group colspan="2">
+                            <field name="included_fields" nolabel="1" />
+                        </group>
+                    </group>
+                    <group colspan="4" col="4" string="Values to be forced">
+                        <group colspan="2">
+                        <field name="forced_values_sel" nolabel="1">
+                            <list editable="bottom">
+                                <field name="name" domain="[('model_id','in',parent.model_ids),('ttype','not in',['one2many','many2one','many2many'])]"/>
+                                <field name="value"/>
+                            </list>
+                        </field>
+                        </group>
+                        <group colspan="2">
+                            <field name="forced_values" nolabel="1" readonly="False"/>
+                        </group>
+                        <button string="Compute Forced Values" colspan="2" type="object" name="compute_forced_value" />
+                    </group>
+                    <group colspan="4" col="4" string="Fallback Values">
+                        <group colspan="2">
+                            <field name="fallback_values_sel" nolabel="1" >
+                                <list editable="bottom">
+                                    <field name="name" domain="[('model','=',parent.model_id),('ttype','in',['many2one'])]"/>
+                                    <field name="value"/>
+                                </list>
+                            </field>
+                        </group>
+                        <group colspan="2">
+                            <field name="fallback_values" nolabel="1" readonly="1"  />
+                        </group>
+                        <button string="Compute Fallback Values" colspan="2" type="object" name="compute_fallback_value" />
+                    </group>
+                    <group colspan="4" col="6">
+                        <group colspan="4" />
+                        <group colspan="2" col="4" string="">
+                            <field name="status" />
+                            <button type="object" string="Validate" name="validate" />
+                        </group>
+                    </group>
+                </sheet>
+                </form>
+            </field>
+        </record>
+
+<!-- TODO
+        <record model="ir.ui.view" id="message_rule_search_view">
+            <field name="name">message.rule.search</field>
+            <field name="model">sync_server.message_rule</field>
+            <field name="arch" type="xml">
+                <search>
+                   	<filter string="Active" domain="[('active','=', True)]" />
+                 	<filter string="Inactive" domain="[('active','=', False)]"  />
+                 	<filter string="All" name="all" domain="['|', ('active','=', False), ('active','=', True)]"  />
+                    <field name="sequence_number" />
+                    <field name="name" />
+                    <newline />
+                    <field name="model_ref" />
+                    <field name="remote_call" />
+                    <field name="direction_usb" />
+                    <field name="status" />
+                    <newline />
+                    <group expand="0" string="Group By...">
+                        <filter string="Group Type" icon="gtk-fullscreen" domain="[]" context="{'group_by': 'type_id'}"/>
+                    </group>
+                </search>
+            </field>
+        </record>
+
+
+        <record model="ir.ui.view" id="message_rule_tree_view">
+            <field name="name">message_rule.tree</field>
+            <field name="model">sync_server.message_rule</field>
+            <field name="arch" type="xml">
+                <list string="Sync Rules Tree">
+                	<field name="active" />
+                    <field name="sequence_number"/>
+                    <field name="name"/>
+                    <field name="model_ref"/>
+                    <field name="remote_call"/>
+                    <field name="type_id"/>
+                    <field name="status"/>
+                </list>
+            </field>
+        </record>
+
+
+        <record model="ir.ui.view" id="message_rule_form_view">
+            <field name="name">message_rule.form</field>
+            <field name="model">sync_server.message_rule</field>
+            <field name="arch" type="xml">
+                <form string="Sync Rule Form">
+                    <group colspan="4" col="6">
+                        <field name="name"/>
+                        <field name="model_ref" on_change="invalidate(model_ref)"/>
+                        <field name="model_id" invisible="1"/>
+                        <field name="sequence_number"/>
+                        <field name="destination_name" on_change="invalidate(model_ref)"/>
+                        <field name="active" readonly="status != 'valid'"/>
+
+                        <field name="applies_to_type" invisible="1"/>
+                        <group colspan="2" col="4">
+                            <field name="group_id" attrs="{'invisible':[('applies_to_type','=',True)], 'required':[('applies_to_type','=',False)]}"/>
+                            <field name="type_id" attrs="{'invisible':[('applies_to_type','=',False)], 'required':[('applies_to_type','=',True)]}" widget="selection"/>
+                        </group>
+                    </group>
+                    <group colspan="4" col="2">
+                        <separator string="Domain" />
+                        <field name="domain" on_change="invalidate(model_ref)" colspan="2" nolabel="1" attrs="{'readonly': [('filter_method', '!=', '')]}"/>
+                        <newline />
+                        <separator string="Wait while" />
+                        <field name="wait_while" on_change="invalidate(model_ref)" colspan="2" nolabel="1" attrs="{'readonly': [('filter_method', '!=', '')]}"/>
+                        <newline />
+                        <field name="filter_method" on_change="invalidate(model_ref)" colspan="2" />
+                        <separator string="Remote Call" />
+                        <field name="remote_call" on_change="invalidate(model_ref)" nolabel="1" required="True" colspan="2" />
+                        <separator string="Arguments of the call" />
+                        <field name="arguments" on_change="invalidate(model_ref)" nolabel="1" colspan="2" />
+                    </group>
+                    <group colspan="4" col="6">
+                        <label string="" colspan="3"/>
+                        <field name="status" readonly="1"/>
+                        <button type="object" string="Validate" name="validate"/>
+                    </group>
+                </form>
+            </field>
+        </record>
+-->
+       <!-- ============================= ACTIONS =================== -->
+        <record model="ir.actions.act_window" id="sync_rule_action">
+            <field name="name">Synchronization Rules</field>
+            <field name="res_model">sync_server.sync_rule</field>
+            <field name="view_mode">list,form</field>
+            <field name="context">{'search_default_all' : 1}</field>
+        </record>
+
+
+<!-- TODO
+        <record model="ir.actions.act_window" id="message_rule_action">
+            <field name="name">Messages Rules</field>
+            <field name="res_model">sync_server.message_rule</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="context">{'search_default_all' : 1}</field>
+        </record>
+-->
+        <menuitem id="rules_menu" name="Rules" parent="sync_menu"
+            groups="base.group_erp_manager"
+            sequence="20"/>
+
+        <menuitem id="sync_rule_menu" name="Data Synchronization Rules" parent="rules_menu"
+            groups="base.group_erp_manager"
+            action="sync_rule_action" />
+<!-- TODO
+        <menuitem id="message_rule_menu" name="Messages Rules" parent="rules_menu"
+            groups="base.group_erp_manager"
+            action="message_rule_action" />
+
+
+       <record model="ir.ui.view" id="rule_validation_view">
+       		<field name="name">sync_server.rule.validation.message.form</field>
+            <field name="model">sync_server.rule.validation.message</field>
+            <field name="arch" type="xml">
+       			<form>
+       				<separator string="Validation Message" colspan="4" />
+       				<field name="message" colspan="4" nolabel="1" readonly="1" />
+       				<field name="state" string="The rule is" />
+       				<button name="validate" string="Ok" type="object" />
+       			</form>
+       		</field>
+       </record>
+-->
+
+    </data>
+</openerp>
+
+<!--
+    vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:
+-->

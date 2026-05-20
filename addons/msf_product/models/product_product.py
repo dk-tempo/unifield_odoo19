@@ -20,12 +20,12 @@ class ProductProduct(models.Model):
     lst_price = fields.Float(string="Public Price", compute="_product_lst_price", digits=(16, 2), readonly=True)
     code = fields.Char(string="Reference", compute="_product_code", readonly=True)
     partner_ref = fields.Char(string="Customer ref", compute="_product_partner_ref", readonly=True)
-    default_code = fields.Char(string="Code", size=18)
-    active = fields.Boolean(string="Active",
+    default_code = fields.Char(string="Code", size=18, index=True)
+    active = fields.Boolean(string="Active", index=True,
                             help="If the active field is set to False, it will allow you to hide the product without removing it.",
                             default=lambda *a: True, )
     variants = fields.Char(string="Variants", size=64)
-    product_tmpl_id = fields.Many2one(string="Product Template", comodel_name="product.template", required=True, ondelete="cascade")
+    product_tmpl_id = fields.Many2one(string="Product Template", comodel_name="product.template", required=True, ondelete="cascade", index=True)
     ean13 = fields.Char(string="EAN13", size=13)
     # packaging = fields.One2many(string="Logistical Units", comodel_name="product.packaging", inverse_name="product_id",
     #                             help="Gives the different ways to package the same product. This has no impact on the picking order and is mainly used if you use the EDI module.")
@@ -73,7 +73,7 @@ class ProductProduct(models.Model):
     #                                 comodel_name="product.category", readonly=True)
     # list_ids = fields.Many2many(string="Lists", compute="_get_list_sublist", search="_search_list_sublist",
     #                             comodel_name="product.list", readonly=True)
-    msfid = fields.Integer(string="MSFID", help="Hidden field for UniData")
+    msfid = fields.Integer(string="MSFID", help="Hidden field for UniData", index=True)
     xmlid_code = fields.Char(string="Xmlid Code", size=18)
     sdref = fields.Char(string="SDref", compute="_get_sdref", search="_search_sdref", size=256, readonly=True)
     duplicate_ok = fields.Boolean(string="Is a duplicate", default=True)
@@ -153,12 +153,12 @@ class ProductProduct(models.Model):
                                                                     ('archived', 'Archived'),
                                                                     ('forbidden', 'Forbidden')], readonly=True,
                                 help="Automatically filled with UniData information.")
-    golden_status = fields.Selection(string="UD Golden State",
+    golden_status = fields.Selection(string="UD Golden State", index=True,
                                      selection=[('Golden', 'Golden'), ('Unmatched', 'Unmatched'), ('Merged', 'Merged'),
                                                 ('Deleted', 'Deleted')], readonly=True)
     is_ud_golden = fields.Boolean(string="UD Golden", compute="_get_is_ud_golden", search="_search_is_ud_golden",
                                   readonly=True)
-    ud_seen = fields.Boolean(string="UD seen in last full sync", readonly=True)
+    ud_seen = fields.Boolean(string="UD seen in last full sync", readonly=True, index=True)
     oc_subscription = fields.Boolean(string="OC Subscription", default=False)
     un_code = fields.Char(string="UN Code", size=32)
     hs_code = fields.Char(string="HS Code", size=12, readonly=True)
@@ -212,7 +212,7 @@ class ProductProduct(models.Model):
     #                         default=lambda obj, cr, uid, c: obj.pool.get('unifield.setup.configuration').get_config(cr,
     #                                                                                                                 uid).vat_ok, )
     nsl_merged = fields.Boolean(string="UD / NSL merged", compute="_get_nsl_merged", readonly=True)
-    replace_product_id = fields.Many2one(string="Merged from", comodel_name="product.product")
+    replace_product_id = fields.Many2one(string="Merged from", comodel_name="product.product", index=True)
     replaced_by_product_id = fields.Many2one(string="Merged to", comodel_name="product.product")
     allow_merge = fields.Boolean(string="UD Allow merge", compute="_get_allow_merge", readonly=True)
     uf_write_date = fields.Datetime(string="Write date")
@@ -223,11 +223,11 @@ class ProductProduct(models.Model):
     currency_fixed = fields.Boolean(string="Currency Changed by US-8196")
     can_be_hq_merged = fields.Boolean(string="Can this product be merged to a kept product ?",
                                       compute="_get_can_be_hq_merged", readonly=True)
-    kept_product_id = fields.Many2one(string="Kept Product", comodel_name="product.product", readonly=True)
-    kept_initial_product_id = fields.Many2one(string="1st Kept Product in case of chaining",
+    kept_product_id = fields.Many2one(string="Kept Product", comodel_name="product.product", readonly=True, index=True)
+    kept_initial_product_id = fields.Many2one(string="1st Kept Product in case of chaining", index=True,
                                               comodel_name="product.product", readonly=True)
     unidata_merged = fields.Boolean(string="UniData Merged", readonly=True)
-    unidata_merge_date = fields.Datetime(string="Date of UniData Merge", readonly=True)
+    unidata_merge_date = fields.Datetime(string="Date of UniData Merge", readonly=True, index=True)
     is_kept_product = fields.Boolean(string="Is a kept product", readonly=True)
     oc_validation = fields.Boolean(string="OC Validation", readonly=True)
     oc_validation_date = fields.Datetime(string="Validation Date", readonly=True)

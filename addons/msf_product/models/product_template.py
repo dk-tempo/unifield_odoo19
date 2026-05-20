@@ -52,7 +52,7 @@ class ProductTemplate(models.Model):
     standard_price = fields.Monetary(string="Cost Price", required=True,
                                   help="Price of product calculated according to the selected costing method.",
                                   default=1, currency_field="currency_id")
-    currency_id = fields.Many2one(string="Currency (cost price)" , comodel_name="res.currency", readonly=True,
+    currency_id = fields.Many2one(string="Currency (cost price)" , comodel_name="res.currency", readonly=True, index=True,
                                   default=lambda self: self.env.company.currency_id)
     finance_price = fields.Monetary(string="Finance Cost Price", readonly=True, currency_field="finance_price_currency_id")
     finance_price_currency_id = fields.Many2one(readonly=True, compute="_get_finance_price_currency_id",
@@ -104,7 +104,7 @@ class ProductTemplate(models.Model):
     loc_rack = fields.Char(string="Rack", size=16)
     loc_row = fields.Char(string="Row", size=16)
     loc_case = fields.Char(string="Case", size=16)
-    company_id = fields.Many2one(string="Company", comodel_name="res.company",
+    company_id = fields.Many2one(string="Company", comodel_name="res.company", index=True,
                                  default=lambda self: self.env.company)
     # taxes_id = fields.Many2many(string="Customer Taxes", comodel_name="account.tax", relation="product_taxes_rel",
     #                             column1="prod_id", column2="tax_id",
@@ -144,16 +144,16 @@ class ProductTemplate(models.Model):
     #                                                                                                         context=c), )
     delay_for_supplier = fields.Integer(string="Default delay for a supplier", compute="_get_delay_for_supplier",
                                         readonly=True)
-    nomen_manda_0 = fields.Many2one(string="Main Type", comodel_name="product.nomenclature", required=True)
-    nomen_manda_1 = fields.Many2one(string="Group", comodel_name="product.nomenclature", required=True)
-    nomen_manda_2 = fields.Many2one(string="Family", comodel_name="product.nomenclature", required=True)
-    nomen_manda_3 = fields.Many2one(string="Root", comodel_name="product.nomenclature", required=True)
-    nomen_sub_0 = fields.Many2one(string="Sub Class 1", comodel_name="product.nomenclature")
-    nomen_sub_1 = fields.Many2one(string="Sub Class 2", comodel_name="product.nomenclature")
-    nomen_sub_2 = fields.Many2one(string="Sub Class 3", comodel_name="product.nomenclature")
-    nomen_sub_3 = fields.Many2one(string="Sub Class 4", comodel_name="product.nomenclature")
-    nomen_sub_4 = fields.Many2one(string="Sub Class 5", comodel_name="product.nomenclature")
-    nomen_sub_5 = fields.Many2one(string="Sub Class 6", comodel_name="product.nomenclature")
+    nomen_manda_0 = fields.Many2one(string="Main Type", comodel_name="product.nomenclature", required=True, index=True)
+    nomen_manda_1 = fields.Many2one(string="Group", comodel_name="product.nomenclature", required=True, index=True)
+    nomen_manda_2 = fields.Many2one(string="Family", comodel_name="product.nomenclature", required=True, index=True)
+    nomen_manda_3 = fields.Many2one(string="Root", comodel_name="product.nomenclature", required=True, index=True)
+    nomen_sub_0 = fields.Many2one(string="Sub Class 1", comodel_name="product.nomenclature", index=True)
+    nomen_sub_1 = fields.Many2one(string="Sub Class 2", comodel_name="product.nomenclature", index=True)
+    nomen_sub_2 = fields.Many2one(string="Sub Class 3", comodel_name="product.nomenclature", index=True)
+    nomen_sub_3 = fields.Many2one(string="Sub Class 4", comodel_name="product.nomenclature", index=True)
+    nomen_sub_4 = fields.Many2one(string="Sub Class 5", comodel_name="product.nomenclature", index=True)
+    nomen_sub_5 = fields.Many2one(string="Sub Class 6", comodel_name="product.nomenclature", index=True)
 
     archived_nomenclature = fields.Boolean(string="Archived Nomenclature", compute="_get_archived_nomenclature",
                                            search="_search_archived_nomenclature", readonly=True)

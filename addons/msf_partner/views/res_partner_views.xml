@@ -176,6 +176,8 @@
         <field name="type">search</field>
         <field name="arch" type="xml">
             <search string="Partners" >
+                <field name="name" />
+                <filter name="filter_all" string="Active + Inactive" domain="[('active','in', [True, False])]" />
                 <filter name="filter_suppliers" string="Suppliers" domain="[('supplier','=',True)]"
                         help="Show only suppliers"/>
                 <filter name="filter_customers" string="Customers" domain="[('customer','=',True)]"
@@ -190,7 +192,7 @@
     <record id="res_partner_suppliers_view_action" model="ir.actions.act_window">
         <field name="name">Suppliers</field>
         <field name="res_model">res.partner</field>
-        <field name="context">{'search_default_filter_suppliers': True}</field>
+        <field name="context">{'search_default_filter_suppliers': True, 'search_default_filter_all': True}</field>
         <field name="search_view_id" ref="res_partner_view_search"/>
         <field name="view_ids"
                eval="[(5, 0, 0),
