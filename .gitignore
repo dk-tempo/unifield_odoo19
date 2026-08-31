@@ -8,7 +8,7 @@
 .idea
 docs/build
 dump/*
-venv/
+poc_odoo-venv/
 
 *.conf
 *.dump

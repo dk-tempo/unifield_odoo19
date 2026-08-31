@@ -14,9 +14,11 @@ class ProductTemplate(models.Model):
         """"""
         return None
 
-    def _get_valid_stat(self):
-        """"""
-        return None
+    def _get_valid_state(self):
+        """
+        Get the "Valid" product state
+        """
+        return self.env.ref("msf_product.status_1")
 
 
     name = fields.Char(string="Description", translate=True, size=128, required=True)
@@ -78,8 +80,8 @@ class ProductTemplate(models.Model):
     purchase_ok = fields.Boolean(string="Can be Purchased",
                                  help="Determine if the product is visible in the list of products within a selection from a purchase order line.",
                                  default=1)
-    # state = fields.Many2one(string="UniField Status", comodel_name="product.status", required=True,
-    #                         help="Tells the user if he can use the product or not.", default=_get_valid_stat)
+    state = fields.Many2one(string="UniField Status", comodel_name="product.status", required=True,
+                            help="Tells the user if he can use the product or not.", default=_get_valid_state)
     uom_id = fields.Many2one(string="Default Unit Of Measure", comodel_name="uom.uom", required=True,
                              help="Default Unit of Measure used for all stock operation.", default=_get_uom_id)
     uom_po_id = fields.Many2one(string="Purchase Unit of Measure", comodel_name="uom.uom", required=True,

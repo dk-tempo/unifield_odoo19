@@ -49,6 +49,7 @@
                                 <group string="Status">
                                     <field name="int_status_code" invisible="1" />
                                     <field name="standard_ok"/>
+                                    <field name="state" widget="selection" />
                                     <field name="state_ud" />
                                     <field name="oc_subscription" readonly="1" invisible="int_status_code != 'unidata'"/>
                                     <field name="golden_status" invisible="1" />

@@ -10,6 +10,8 @@
     "data": [
         "security/ir.model.access.csv",
 
+        "data/product_status_data.xml",
+
         "views/product_nomenclature_views.xml",
         "views/product_product_views.xml",
         "views/product_purchase_views.xml",
