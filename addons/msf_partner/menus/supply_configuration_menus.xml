@@ -1,29 +1,36 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <!-- # Home menu tile -->
-    <menuitem name="Supply Configuration"
-              id="menu_supply_configuration"
-              sequence="20"
-              web_icon="msf_product,static/img/supply_configuration.png"
-              groups="base.group_user"/>
-    
-    <!-- Products Nomenclature -->
-    <menuitem id="supply_config_product_nomenclature_menu"
-              name="Products Nomenclature"
-              action="product_nomenclature_view_action"
-              parent="menu_supply_configuration"
-              sequence="10"/>
-    <!-- Unit of Measure -->
-    <!-- Categories -->
-    <menuitem id="supply_config_uom_category_menu"
-              name="Units of Measure Categories"
-              action="uom_category_view_action"
-              parent="menu_supply_configuration"
-              sequence="20"/>
-    <!-- Units -->
-    <menuitem id="supply_config_uom_uom_menu"
-              name="Units of Measure"
-              action="uom_uom_view_action"
-              parent="menu_supply_configuration"
-              sequence="30"/>
+<!--    <menuitem name="Supply Configuration"-->
+<!--              id="menu_supply_configuration"-->
+<!--              sequence="20"-->
+<!--              web_icon="msf_product,static/img/supply_configuration.png"-->
+<!--              groups="base.group_user">-->
+<!--        &lt;!&ndash; Product &ndash;&gt;-->
+<!--        <menuitem id="supply_config_product_menu" name="Product" sequence="10">-->
+<!--            &lt;!&ndash; Products Nomenclature &ndash;&gt;-->
+<!--            <menuitem id="supply_config_product_nomenclature_menu"-->
+<!--                      name="Products Nomenclature"-->
+<!--                      action="product_nomenclature_view_action"-->
+<!--                      sequence="10"/>-->
+<!--            &lt;!&ndash; Supply Sources &ndash;&gt;-->
+<!--            <menuitem id="supply_config_product_supply_source_menu"-->
+<!--                      name="Supply sources"-->
+<!--                      action="product_supply_source_view_action"-->
+<!--                      sequence="20"/>-->
+<!--            &lt;!&ndash; Unit of Measure &ndash;&gt;-->
+<!--            <menuitem id="supply_config_uom_menu" name="Unit of Measure" sequence="70">-->
+<!--                &lt;!&ndash; Categories &ndash;&gt;-->
+<!--                <menuitem id="supply_config_uom_category_menu"-->
+<!--                          name="Units of Measure Categories"-->
+<!--                          action="uom_category_view_action"-->
+<!--                          sequence="10"/>-->
+<!--                &lt;!&ndash; Units &ndash;&gt;-->
+<!--                <menuitem id="supply_config_uom_uom_menu"-->
+<!--                          name="Units of Measure"-->
+<!--                          action="uom_uom_view_action"-->
+<!--                          sequence="20"/>-->
+<!--            </menuitem>-->
+<!--        </menuitem>-->
+<!--    </menuitem>-->
 </odoo>

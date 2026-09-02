@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="section_code_b" model="product.section.code">
+        <field name="code">B</field>
+        <field name="section">OCB</field>
+        <field name="description">MSF standard recognized by all sections, but supplied and used only by OCB missions.</field>
+    </record>
+    <record id="section_code_b_minus" model="product.section.code">
+        <field name="code">B-</field>
+        <field name="section">OCB, not in order list</field>
+        <field name="description">MSF standard recognized by all sections, but supplied and used only by OCB missions. Can be ordered in specific situations only.</field>
+    </record>
+    <record id="section_code_ch" model="product.section.code">
+        <field name="code">CH</field>
+        <field name="section">OCG</field>
+        <field name="description">MSF standard recognized by all sections, but supplied and used only by OCG missions.</field>
+    </record>
+    <record id="section_code_e" model="product.section.code">
+        <field name="code">E</field>
+        <field name="section">OCBA</field>
+        <field name="description">MSF standard recognized by all sections, but supplied and used only by OCBA missions.</field>
+    </record>
+    <record id="section_code_e_minus" model="product.section.code">
+        <field name="code">E-</field>
+        <field name="section">OCBA, not in order list</field>
+        <field name="description">MSF standard recognized by all sections, but supplied and used only by OCBA missions. Can be ordered in specific situations only.</field>
+    </record>
+    <record id="section_code_f" model="product.section.code">
+        <field name="code">F</field>
+        <field name="section">OCP</field>
+        <field name="description">MSF standard recognized by all sections, but supplied and used only by OCP missions.</field>
+    </record>
+    <record id="section_code_f_minus" model="product.section.code">
+        <field name="code">F-</field>
+        <field name="section">OCP, not in order list</field>
+        <field name="description">MSF standard recognized by all sections, but supplied and used only by OCP missions. Can be ordered in specific situations only.</field>
+    </record>
+    <record id="section_code_h" model="product.section.code">
+        <field name="code">H</field>
+        <field name="section">OCA</field>
+        <field name="description">MSF standard recognized by all sections, but supplied and used only by OCA missions.</field>
+    </record>
+    <record id="section_code_h_minus" model="product.section.code">
+        <field name="code">H-</field>
+        <field name="section">OCA, not in order list</field>
+        <field name="description">MSF standard recognized by all sections, but supplied and used only by OCA missions. Can be ordered in specific situations only.</field>
+    </record>
+</odoo>

@@ -47,6 +47,7 @@
                                     <field name="soq_weight" readonly="type == 'service'"/>
                                 </group>
                                 <group string="Status">
+                                    <field name="international_status" widget="selection" />
                                     <field name="int_status_code" invisible="1" />
                                     <field name="standard_ok"/>
                                     <field name="state" widget="selection" />
@@ -123,13 +124,15 @@
                         <page string="Specific info">
                             <group>
                                 <group string="Quality">
-                                    <!--                                    <field name="heat_sensitive_item" />-->
+                                    <field name="heat_sensitive_item" widget="selection" />
+                                    <field name="show_cold_chain" invisible="1" />
+                                    <field name="cold_chain" widget="selection" invisible="not show_cold_chain" />
                                     <field name="sterilized" />
                                     <field name="single_use" />
                                     <field name="controlled_substance" />
                                 </group>
                                 <group string="Diffusion">
-                                    <!--                                    <field name="justification_code_id" />-->
+                                    <field name="justification_code_id" />
                                     <field name="closed_article" />
                                 </group>
                             </group>
@@ -233,7 +236,7 @@
         <field name="model">product.product</field>
         <field name="type">list</field>
         <field name="arch" type="xml">
-            <list string="" >
+            <list string="" delete="False">
                 <!-- Fields -->
                 <field name="default_code" />
                 <field name="name"/>

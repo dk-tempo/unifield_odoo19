@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="justification_code_ja" model="product.justification.code">
+        <field name="code">A</field>
+        <field name="description">This kind of article need a more detailed description of the context in which it will be used.</field>
+    </record>
+    <record id="justification_code_jc" model="product.justification.code">
+        <field name="code">C</field>
+        <field name="description">The article is potentially subject to important modifications (supply sources, better alternatives).</field>
+    </record>
+    <record id="justification_code_je" model="product.justification.code">
+        <field name="code">E</field>
+        <field name="description">The article is expensive and its choice should be justified in relation to cheaper alternatives.</field>
+    </record>
+    <record id="justification_code_jf" model="product.justification.code">
+        <field name="code">F</field>
+        <field name="description">Monitor the use, efficacy for at least one year after the introduction of new drugs.</field>
+    </record>
+    <record id="justification_code_jm" model="product.justification.code">
+        <field name="code">M</field>
+        <field name="description">The article may imply medical risks if misused by persons with insufficient training or knowledge.</field>
+    </record>
+    <record id="justification_code_jme" model="product.justification.code">
+        <field name="code">ME</field>
+        <field name="description">The article may imply medical risks if misused by persons with insufficient training, Expensive.</field>
+    </record>
+    <record id="justification_code_jmf" model="product.justification.code">
+        <field name="code">MF</field>
+        <field name="description">The article may imply medical risks if misused + Monitor the use, efficacy at least one year.</field>
+    </record>
+    <record id="justification_code_jo" model="product.justification.code">
+        <field name="code">O</field>
+        <field name="description">The article and its specifications are obsolete or are no longer the international standard.</field>
+    </record>
+    <record id="justification_code_jom" model="product.justification.code">
+        <field name="code">OM</field>
+        <field name="description">The article and its specifications are obsolete , it may imply a medical risk if misused.</field>
+    </record>
+    <record id="justification_code_jop" model="product.justification.code">
+        <field name="code">OP</field>
+        <field name="description">The article and its specifications are obsolete , it has to be used only in a specific program.</field>
+    </record>
+    <record id="justification_code_jp" model="product.justification.code">
+        <field name="code">P</field>
+        <field name="description">The article must be used only in a properly designed programme.</field>
+    </record>
+    <record id="justification_code_jpa" model="product.justification.code">
+        <field name="code">PA</field>
+        <field name="description">Article must be used only in a properly designed programme, need a more detailed description.</field>
+    </record>
+    <record id="justification_code_jpcme" model="product.justification.code">
+        <field name="code">PCME</field>
+        <field name="description">Article only for a properly designed Programme, it may imply a Medical risk if misused, Expensive.</field>
+    </record>
+    <record id="justification_code_jpe" model="product.justification.code">
+        <field name="code">PE</field>
+        <field name="description">Article must be used only in a properly designed programme, Expensive, cheaper alternatives exist.</field>
+    </record>
+    <record id="justification_code_jpf" model="product.justification.code">
+        <field name="code">PF</field>
+        <field name="description">The article must be used only in a properly designed programme + monitor the use, efficacy.</field>
+    </record>
+    <record id="justification_code_jpm" model="product.justification.code">
+        <field name="code">PM</field>
+        <field name="description">Article must be used only in a properly designed programme, it may imply a medical risk if misused.</field>
+    </record>
+    <record id="justification_code_pmf" model="product.justification.code">
+        <field name="code">PMF</field>
+        <field name="description">Article must be used only in a properly designed programme, it may imply a medical risk if misused. Monitor the use, efficacy for at least one year after the introduction of new drugs</field>
+    </record>
+    <record id="justification_code_jpme" model="product.justification.code">
+        <field name="code">PME</field>
+        <field name="description">Article only for a properly designed Programme, it may imply a Medical risk if misused, Expensive.</field>
+    </record>
+    <record id="justification_code_js" model="product.justification.code">
+        <field name="code">S</field>
+        <field name="description">Second choice. Article must only be used if the first choice is not available or cannot be used in a specific context.</field>
+    </record>
+    <record id="justification_code_jsm" model="product.justification.code">
+        <field name="code">SM</field>
+        <field name="description">Second choice &amp; medical risk. Article must be only used if the first choice is not available or cannot be used in a specific context. The article may imply medical risks if misused by persons with insufficient training or knowledge.</field>
+    </record>
+    <record id="justification_code_jsp" model="product.justification.code">
+        <field name="code">SP</field>
+        <field name="description">Second Choice &amp; specific programme. The article must only be used if the first choice. is not available or cannot be used in a specific context. The article must be used only in a properly designed programme.</field>
+    </record>
+    <record id="justification_code_spm" model="product.justification.code">
+        <field name="code">SPM</field>
+        <field name="description">Second choice. Article must only be used if the first choice is not available or cannot be used in a specific context. Article must be used only in a properly designed programme, it may imply a medical risk if misused.</field>
+    </record>
+    <record id="justification_code_pmfe" model="product.justification.code">
+        <field name="code">PMFE</field>
+        <field name="description">Article must be used only in a properly designed programme, it may imply a medical risk if misused. Monitor the use, efficacy for at least one year after the introduction of new drugs. Expensive item</field>
+    </record>
+</odoo>

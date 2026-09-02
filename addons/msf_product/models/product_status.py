@@ -17,6 +17,7 @@ class ProductStatus(models.Model):
     mapped_to = fields.Many2one(comodel_name='product.status', string='Replaced by')
 
     def unlink(self):
+        # Raise an error if the status is used in a product
         if self.env['product.product'].search([('state', 'in', self.ids)]):
             raise ValidationError(_('You cannot delete this status because it\'s used at least in one product'))
         return super(ProductStatus, self).unlink()

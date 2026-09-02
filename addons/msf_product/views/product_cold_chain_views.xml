@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="product_cold_chain_view_action" model="ir.actions.act_window">
+        <field name="name">Thermosensitivity</field>
+        <field name="res_model">product.cold_chain</field>
+        <field name="view_mode">list</field>
+    </record>
+
+    <record id="product_cold_chain_search_view" model="ir.ui.view">
+        <field name="name">product.cold_chain.search</field>
+        <field name="model">product.cold_chain</field>
+        <field name="arch" type="xml">
+            <search string="Thermosensitivity">
+                <field name="name"/>
+                <field name="cold_chain"/>
+            </search>
+        </field>
+    </record>
+
+    <record id="product_cold_chain_tree_view" model="ir.ui.view">
+        <field name="name">product.cold_chain.list</field>
+        <field name="model">product.cold_chain</field>
+        <field name="arch" type="xml">
+            <list string="Thermosensitivity" editable="top" duplicate="False">
+                <field name="name"/>
+                <field name="cold_chain"/>
+            </list>
+        </field>
+    </record>
+</odoo>

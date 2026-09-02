@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="product_status_view_action" model="ir.actions.act_window">
+        <field name="name">Status</field>
+        <field name="res_model">product.status</field>
+        <field name="view_mode">list</field>
+    </record>
+
+    <record id="product_status_search_view" model="ir.ui.view">
+        <field name="name">product.status.search</field>
+        <field name="model">product.status</field>
+        <field name="arch" type="xml">
+            <search string="Status">
+                <field name="name"/>
+            </search>
+        </field>
+    </record>
+
+    <record id="product_status_tree_view" model="ir.ui.view">
+        <field name="name">product.status.list</field>
+        <field name="model">product.status</field>
+        <field name="arch" type="xml">
+            <list string="Supply Source" create="False" edit="False" duplicate="False" delete="False">
+                <field name="name"/>
+                <field name="no_external"/>
+                <field name="no_esc"/>
+                <field name="no_internal"/>
+                <field name="no_consumption"/>
+                <field name="no_storage"/>
+            </list>
+        </field>
+    </record>
+</odoo>

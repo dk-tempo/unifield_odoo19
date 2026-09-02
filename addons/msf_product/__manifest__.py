@@ -11,10 +11,22 @@
         "security/ir.model.access.csv",
 
         "data/product_status_data.xml",
+        "data/product_international_status_data.xml",
+        "data/product_heat_sensitive_data.xml",
+        "data/product_cold_chain_data.xml",
+        "data/product_justification_code_data.xml",
+        "data/product_section_code_data.xml",
+        "data/product_supply_source_data.xml",
 
+        "views/product_cold_chain_views.xml",
+        "views/product_heat_sensitive_views.xml",
+        "views/product_international_status_views.xml",
+        "views/product_justification_code_views.xml",
         "views/product_nomenclature_views.xml",
         "views/product_product_views.xml",
         "views/product_purchase_views.xml",
+        "views/product_status_views.xml",
+        "views/product_supply_source_views.xml",
         "views/uom_views.xml",
 
         "menus/supply_configuration_menus.xml",

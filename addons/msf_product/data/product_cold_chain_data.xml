@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+    <!-- new code -->
+    <record model="product.cold_chain" id="cold_14">
+        <field name="code">0208</field>
+        <field name="ud_code">0208</field>
+        <field name="name">0208 - Cold Chain / Refrigerated 2-8°C</field>
+        <field name="cold_chain" eval="True" />
+    </record>
+    <record model="product.cold_chain" id="cold_15">
+        <field name="code">1525</field>
+        <field name="ud_code">1525</field>
+        <field name="name">1525 - Controlled Room Temperature 15-25°C</field>
+        <field name="cold_chain" eval="False" />
+    </record>
+    <record model="product.cold_chain" id="cold_16">
+        <field name="code">CT25</field>
+        <field name="ud_code">CT25</field>
+        <field name="name">CT25 - Controlled Temperature 2-25°C</field>
+        <field name="cold_chain" eval="False" />
+    </record>
+    <record model="product.cold_chain" id="cold_17">
+        <field name="code">CT30</field>
+        <field name="ud_code">CT30</field>
+        <field name="name">CT30 - Controlled Temperature 2-30°C</field>
+        <field name="cold_chain" eval="False" />
+    </record>
+    <record model="product.cold_chain" id="cold_18">
+        <field name="code">F-20</field>
+        <field name="ud_code">F-20</field>
+        <field name="name">F-20 - Frozen &lt;-20°C</field>
+        <field name="cold_chain" eval="False" />
+    </record>
+    <record model="product.cold_chain" id="cold_19">
+        <field name="code">FSRT</field>
+        <field name="ud_code">FSRT</field>
+        <field name="name">FSRT - Frozen for Storage, Refrigerated for Transport</field>
+        <field name="cold_chain" eval="False" />
+    </record>
+    <record model="product.cold_chain" id="cold_20">
+        <field name="code">CT3+</field>
+        <field name="ud_code">CT3+</field>
+        <field name="name">CT3+ - Temperature Monitoring 2-40°C</field>
+        <field name="cold_chain" eval="False" />
+    </record>
+    <record model="product.cold_chain" id="cold_21">
+        <field name="code">Mix/Check</field>
+        <field name="ud_code">Mix/Check</field>
+        <field name="name">Mix/Check - Article with components that need different cold chain storage conditions</field>
+        <field name="cold_chain" eval="False" />
+    </record>
+
+    <!-- old code -->
+    <record model="product.cold_chain" id="cold_1">
+        <field name="code">*</field>
+        <field name="ud_code">*</field>
+        <field name="name">* - Keep Cool: used for a kit or article containing cold chain module or item(s)</field>
+        <field name="cold_chain" eval="True" />
+        <field name="mapped_to" ref="cold_14" />
+    </record>
+    <record model="product.cold_chain" id="cold_2">
+        <field name="code">*0</field>
+        <field name="ud_code">*0</field>
+        <field name="name">*0 - Problem if any window blue</field>
+        <field name="cold_chain" eval="True" />
+        <field name="mapped_to" ref="cold_14" />
+    </record>
+    <record model="product.cold_chain" id="cold_3">
+        <field name="code">*0F</field>
+        <field name="ud_code">*0F</field>
+        <field name="name">*0F - Problem if any window blue or Freeze-tag = ALARM</field>
+        <field name="cold_chain" eval="True" />
+        <field name="mapped_to" ref="cold_14" />
+    </record>
+    <record model="product.cold_chain" id="cold_4">
+        <field name="code">*A</field>
+        <field name="ud_code">*A</field>
+        <field name="name">*A - Problem if A, B, C and/or D blue = ALARM</field>
+        <field name="cold_chain" eval="True" />
+        <field name="mapped_to" ref="cold_14" />
+    </record>
+    <record model="product.cold_chain" id="cold_5">
+        <field name="code">*AF</field>
+        <field name="ud_code">*AF</field>
+        <field name="name">*AF - Problem if A, B, C and/or D blue or Freeze-tag = ALARM</field>
+        <field name="cold_chain" eval="True" />
+        <field name="mapped_to" ref="cold_14" />
+    </record>
+    <record model="product.cold_chain" id="cold_6">
+        <field name="code">*B</field>
+        <field name="ud_code">*B</field>
+        <field name="name">*B - Problem if B, C and/or D blue = ALARM</field>
+        <field name="cold_chain" eval="True" />
+        <field name="mapped_to" ref="cold_14" />
+    </record>
+    <record model="product.cold_chain" id="cold_7">
+        <field name="code">*BF</field>
+        <field name="ud_code">*BF</field>
+        <field name="name">*BF - Problem if B, C and/or D blue or Freeze-tag = ALARM</field>
+        <field name="cold_chain" eval="True" />
+        <field name="mapped_to" ref="cold_14" />
+    </record>
+    <record model="product.cold_chain" id="cold_8">
+        <field name="code">*C</field>
+        <field name="ud_code">*C</field>
+        <field name="name">*C - Problem if C and D blue</field>
+        <field name="cold_chain" eval="True" />
+        <field name="mapped_to" ref="cold_14" />
+    </record>
+    <record model="product.cold_chain" id="cold_9">
+        <field name="code">*CF</field>
+        <field name="ud_code">*CF</field>
+        <field name="name">*CF - Problem if C and/or D blue or Freeze-tag = ALARM</field>
+        <field name="cold_chain" eval="True" />
+        <field name="mapped_to" ref="cold_14" />
+    </record>
+    <record model="product.cold_chain" id="cold_10">
+        <field name="code">*D</field>
+        <field name="ud_code">*D</field>
+        <field name="name">*D - Store and transport at -25°C (store in deepfreezer, transport with dry-ice)</field>
+        <field name="cold_chain" eval="False" />
+        <field name="mapped_to" ref="cold_18" />
+    </record>
+    <record model="product.cold_chain" id="cold_11">
+        <field name="code">*F</field>
+        <field name="ud_code">*F</field>
+        <field name="name">*F - Cannot be frozen: check FreezeWatch</field>
+        <field name="cold_chain" eval="False" />
+        <field name="mapped_to" ref="cold_17" />
+    </record>
+    <record model="product.cold_chain" id="cold_12">
+        <field name="code">*25</field>
+        <field name="ud_code">*25</field>
+        <field name="name">*25 - Must be kept below 25°C (but not necesseraly in cold chain)</field>
+        <field name="cold_chain" eval="False" />
+        <field name="mapped_to" ref="cold_16" />
+    </record>
+    <record model="product.cold_chain" id="cold_13">
+        <field name="code">*25F</field>
+        <field name="ud_code">*25F</field>
+        <field name="name">*25F - Must be kept below 25°C and cannot be frozen: check FreezeWatch</field>
+        <field name="cold_chain" eval="False" />
+        <field name="mapped_to" ref="cold_15" />
+    </record>
+</odoo>

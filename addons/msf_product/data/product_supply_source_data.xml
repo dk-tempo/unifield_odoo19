@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+    <record id="supply_source_msf_log" model="product.supply.source">
+        <field name="source">MSF Log</field>
+    </record>
+    <record id="supply_source_msf_supply" model="product.supply.source">
+        <field name="source">MSF Supply</field>
+    </record>
+    <record id="supply_source_apu" model="product.supply.source">
+        <field name="source">APU</field>
+    </record>
+    <record id="supply_source_local" model="product.supply.source">
+        <field name="source">Local</field>
+    </record>
+    <record id="supply_source_non_local" model="product.supply.source">
+        <field name="source">Non Local</field>
+    </record>
+</odoo>

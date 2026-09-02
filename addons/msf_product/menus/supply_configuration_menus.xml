@@ -5,25 +5,57 @@
               id="menu_supply_configuration"
               sequence="20"
               web_icon="msf_product,static/img/supply_configuration.png"
-              groups="base.group_user"/>
-    
-    <!-- Products Nomenclature -->
-    <menuitem id="supply_config_product_nomenclature_menu"
-              name="Products Nomenclature"
-              action="product_nomenclature_view_action"
-              parent="menu_supply_configuration"
-              sequence="10"/>
-    <!-- Unit of Measure -->
-    <!-- Categories -->
-    <menuitem id="supply_config_uom_category_menu"
-              name="Units of Measure Categories"
-              action="uom_category_view_action"
-              parent="menu_supply_configuration"
-              sequence="20"/>
-    <!-- Units -->
-    <menuitem id="supply_config_uom_uom_menu"
-              name="Units of Measure"
-              action="uom_uom_view_action"
-              parent="menu_supply_configuration"
-              sequence="30"/>
+              groups="base.group_user">
+        <!-- Product -->
+        <menuitem id="supply_config_product_menu" name="Product" sequence="10">
+            <!-- Products Nomenclature -->
+            <menuitem id="supply_config_product_nomenclature_menu"
+                      name="Products Nomenclature"
+                      action="product_nomenclature_view_action"
+                      sequence="10"/>
+            <!-- Supply Sources -->
+            <menuitem id="supply_config_product_supply_source_menu"
+                      name="Supply sources"
+                      action="product_supply_source_view_action"
+                      sequence="20"/>
+            <!-- Status -->
+            <menuitem id="supply_config_product_status_menu"
+                      name="Status"
+                      action="product_status_view_action"
+                      sequence="30"/>
+            <!-- Product creators -->
+            <menuitem id="supply_config_product_international_status_menu"
+                      name="Product creators"
+                      action="product_international_status_view_action"
+                      sequence="40"/>
+            <!-- Temperature sensitive -->
+            <menuitem id="supply_config_product_heat_sensitive_menu"
+                      name="Temperature sensitive"
+                      action="product_heat_sensitive_view_action"
+                      sequence="50"/>
+            <!-- Thermosensitivity -->
+            <menuitem id="supply_config_product_cold_chain_menu"
+                      name="Thermosensitivity"
+                      action="product_cold_chain_view_action"
+                      sequence="60"/>
+            <!-- Justification codes -->
+            <menuitem id="supply_config_product_justification_code_menu"
+                      name="Justification codes"
+                      action="product_justification_code_view_action"
+                      sequence="70"/>
+            <!-- Unit of Measure -->
+            <menuitem id="supply_config_uom_menu" name="Unit of Measure" sequence="80">
+                <!-- Categories -->
+                <menuitem id="supply_config_uom_category_menu"
+                          name="Units of Measure Categories"
+                          action="uom_category_view_action"
+                          sequence="10"/>
+                <!-- Units -->
+                <menuitem id="supply_config_uom_uom_menu"
+                          name="Units of Measure"
+                          action="uom_uom_view_action"
+                          sequence="20"/>
+            </menuitem>
+        </menuitem>
+    </menuitem>
 </odoo>

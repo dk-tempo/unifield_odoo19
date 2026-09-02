@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+    <record model="product.international.status" id="int_1">
+        <field name="code">itc</field>
+        <field name="name">ITC</field>
+    </record>
+    <record model="product.international.status" id="int_2">
+        <field name="code">esc</field>
+        <field name="name">ESC</field>
+    </record>
+    <record model="product.international.status" id="int_3">
+        <field name="code">hq</field>
+        <field name="name">HQ</field>
+    </record>
+    <record model="product.international.status" id="int_4">
+        <field name="code">local</field>
+        <field name="name">Local</field>
+    </record>
+    <record model="product.international.status" id="int_5">
+        <field name="code">temp</field>
+        <field name="name">Temporary</field>
+    </record>
+    <record model="product.international.status" id="int_6">
+        <field name="code">unidata</field>
+        <field name="name">UniData</field>
+    </record>
+</odoo>

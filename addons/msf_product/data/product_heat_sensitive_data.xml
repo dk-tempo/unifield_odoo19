@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+    <record model="product.heat_sensitive" id="heat_yes">
+        <field name="code">yes</field>
+        <field name="name">Yes</field>
+    </record>
+    <record model="product.heat_sensitive" id="heat_no">
+        <field name="code">no</field>
+        <field name="name">No</field>
+    </record>
+    <record model="product.heat_sensitive" id="heat_no_know">
+        <field name="code">no_know</field>
+        <field name="name">tbd</field>
+    </record>
+    <record model="product.heat_sensitive" id="heat_1">
+        <field name="code">KR</field>
+        <field name="name">Keep refrigerated but not cold chain (+2 to +8°C) for transport</field>
+        <field name="active" eval="False" />
+    </record>
+    <record model="product.heat_sensitive" id="heat_2">
+        <field name="code">*</field>
+        <field name="name">Keep Cool</field>
+        <field name="active" eval="False" />
+    </record>
+    <record model="product.heat_sensitive" id="heat_3">
+        <field name="code">**</field>
+        <field name="name">Keep Cool, airfreight</field>
+        <field name="active" eval="False" />
+    </record>
+    <record model="product.heat_sensitive" id="heat_4">
+        <field name="code">***</field>
+        <field name="name">Cold Chain, 0° to 8°C strict</field>
+        <field name="active" eval="False" />
+    </record>
+</odoo>

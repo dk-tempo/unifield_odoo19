@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="product_heat_sensitive_view_action" model="ir.actions.act_window">
+        <field name="name">Temperature sensitive</field>
+        <field name="res_model">product.heat_sensitive</field>
+        <field name="view_mode">list</field>
+    </record>
+
+    <record id="product_heat_sensitive_search_view" model="ir.ui.view">
+        <field name="name">product.heat_sensitive.search</field>
+        <field name="model">product.heat_sensitive</field>
+        <field name="arch" type="xml">
+            <search string="Temperature sensitive">
+                <field name="name"/>
+            </search>
+        </field>
+    </record>
+
+    <record id="product_heat_sensitive_tree_view" model="ir.ui.view">
+        <field name="name">product.heat_sensitive.list</field>
+        <field name="model">product.heat_sensitive</field>
+        <field name="arch" type="xml">
+            <list string="Temperature sensitive" editable="top" duplicate="False">
+                <field name="name"/>
+            </list>
+        </field>
+    </record>
+</odoo>

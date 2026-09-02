@@ -7,6 +7,18 @@ class ProductProduct(models.Model):
     _inherits = {'product.template': 'product_tmpl_id'}
     _order = 'default_code, name, id'
 
+    def _get_default_international_status(self):
+        """
+        Get the "Local" International Status
+        """
+        return self.env.ref('msf_product.int_4')
+
+    def _get_default_sensitive_item(self):
+        """
+        Get the "No" Temperature Sensitivity
+        """
+        return self.env.ref('msf_product.heat_no')
+
     qty_available = fields.Float(string="Real Stock", compute="_product_available", digits=(16, 3), readonly=True,
                                  help="Current quantities of products in selected locations or all internal if none have been selected.")
     virtual_available = fields.Float(string="Virtual Stock", compute="_product_available", digits=(16, 3),
@@ -81,7 +93,8 @@ class ProductProduct(models.Model):
     description2 = fields.Text(string="Description 2")
     old_code = fields.Char(string="Old code", size=1024)
     new_code = fields.Char(string="New code", size=64)
-    # international_status = fields.Many2one(string="Product Creator", comodel_name="product.international.status")
+    international_status = fields.Many2one(string="Product Creator", comodel_name="product.international.status",
+                                           default=_get_default_international_status)
     int_status_code = fields.Char(string="Code of Product Creator", compute="_get_int_status_code", size=64,
                                   readonly=True)
     perishable = fields.Boolean(string="Expiry Date Mandatory", default=False)
@@ -104,22 +117,22 @@ class ProductProduct(models.Model):
                                             ('common', '5-Common'), ('other', 'X-Other')])
     narcotic = fields.Boolean(string="Narcotic/Psychotropic", default=False)
     abc_class = fields.Selection(string="ABC Class", selection=[('', ''), ('a', 'A'), ('b', 'B'), ('c', 'C')])
-    # section_code_ids = fields.Many2many(string="Section Code", comodel_name="product.section.code",
-    #                                     relation="product_section_code_rel", column1="product_id",
-    #                                     column2="section_code_id")
+    section_code_ids = fields.Many2many(string="Section Code", comodel_name="product.section.code",
+                                        relation="product_section_code_rel", column1="product_id",
+                                        column2="section_code_id")
     library = fields.Selection(string="Library",
                                selection=[('', ''), ('l1', 'L1'), ('l2', 'L2'), ('l3', 'L3'), ('l4', 'L4')])
-    # supply_source_ids = fields.Many2many(string="Supply Source", comodel_name="product.supply.source",
-    #                                      relation="product_supply_source_rel", column1="product_id",
-    #                                      column2="supply_source_id")
+    supply_source_ids = fields.Many2many(string="Supply Source", comodel_name="product.supply.source",
+                                         relation="product_supply_source_rel", column1="product_id",
+                                         column2="supply_source_id")
     sublist = fields.Char(string="Sublist", size=64)
     composed_kit = fields.Boolean(string="Kit Composed of Kits/Modules", default=False)
     options_ids = fields.Many2many(string="Options", comodel_name="product.product", relation="product_options_rel",
                                    column1="product_id", column2="product_option_id")
     is_kc = fields.Boolean(string="Is Cold Chain ?", compute="_compute_kc_dg_cs_ssl_values", store=True, readonly=True)
-    # heat_sensitive_item = fields.Many2one(string="Temperature sensitive item", comodel_name="product.heat_sensitive",
-    #                                       required=True)
-    # cold_chain = fields.Many2one(string="Thermosensitivity", comodel_name="product.cold_chain")
+    heat_sensitive_item = fields.Many2one(string="Temperature sensitive item", comodel_name="product.heat_sensitive",
+                                          required=True, default=_get_default_sensitive_item)
+    cold_chain = fields.Many2one(string="Thermosensitivity", comodel_name="product.cold_chain")
     show_cold_chain = fields.Boolean(string="Show cold chain")
     options_ids_inv = fields.Many2many(string="Options Inv.", comodel_name="product.product",
                                        relation="product_options_rel", column1="product_option_id",
@@ -128,7 +141,7 @@ class ProductProduct(models.Model):
                                   required=True, default="no")
     single_use = fields.Selection(string="Single Use", selection=[('yes', 'Yes'), ('no', 'No'), ('no_know', 'tbd')],
                                   required=True, default="no")
-    # justification_code_id = fields.Many2one(string="Justification Code", comodel_name="product.justification.code")
+    justification_code_id = fields.Many2one(string="Justification Code", comodel_name="product.justification.code")
     med_device_class = fields.Selection(string="Medical Device Class",
                                         selection=[('', ''), ('I', 'Class I (General controls)'),
                                                    ('II', 'Class II (General control with special controls)'),
@@ -342,7 +355,7 @@ class ProductProduct(models.Model):
     def _get_int_status_code(self):
         """"""
         for record in self:
-            record.int_status_code = ""
+            record.int_status_code = record.international_status and record.international_status.code or ''
 
     def _get_batch_attributes(self):
         """"""
@@ -566,3 +579,17 @@ class ProductProduct(models.Model):
     @api.onchange('nomen_manda_2')
     def _onchange_nomen_manda_2(self):
         self.nomen_manda_3 = None
+
+    @api.onchange('heat_sensitive_item')
+    def onchange_heat(self):
+        """
+        Set the value for the field 'show_cold_chain' according to selection Temperature sensitive value.
+        If the returned value is True, the field Cold Chain will be displayed
+        :return: True of False in the 'show_cold_chain' field
+        """
+        heat_no_ids = [self.env.ref('msf_product.heat_no'), self.env.ref('msf_product.heat_no_know')]
+        sensitive = self.heat_sensitive_item and self.heat_sensitive_item not in heat_no_ids
+
+        self.show_cold_chain = sensitive
+        if not sensitive:
+            self.cold_chain = False
