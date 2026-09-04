@@ -10,6 +10,8 @@ from . import product_cold_chain
 from . import product_section_code
 from . import product_supply_source
 from . import product_justification_code
+from . import product_list
+from . import product_list_line
 
 from . import product_purchase
 from . import product_purchase_line

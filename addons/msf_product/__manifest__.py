@@ -22,6 +22,7 @@
         "views/product_heat_sensitive_views.xml",
         "views/product_international_status_views.xml",
         "views/product_justification_code_views.xml",
+        "views/product_list_views.xml",
         "views/product_nomenclature_views.xml",
         "views/product_product_views.xml",
         "views/product_purchase_views.xml",

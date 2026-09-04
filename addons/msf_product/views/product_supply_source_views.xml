@@ -7,8 +7,9 @@
     </record>
 
     <record id="product_supply_source_search_view" model="ir.ui.view">
-        <field name="name">product.supply.source.search</field>
+        <field name="name">product.supply.source.search.view</field>
         <field name="model">product.supply.source</field>
+        <field name="type">search</field>
         <field name="arch" type="xml">
             <search string="Supply sources">
                 <field name="source"/>
@@ -16,9 +17,10 @@
         </field>
     </record>
 
-    <record id="product_supply_source_tree_view" model="ir.ui.view">
-        <field name="name">product.supply.source.list</field>
+    <record id="product_supply_source_list_view" model="ir.ui.view">
+        <field name="name">product.supply.source.list.view</field>
         <field name="model">product.supply.source</field>
+        <field name="type">list</field>
         <field name="arch" type="xml">
             <list string="Supply Source" editable="top" duplicate="False">
                 <field name="source"/>

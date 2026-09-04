@@ -7,8 +7,9 @@
     </record>
 
     <record id="product_justification_code_search_view" model="ir.ui.view">
-        <field name="name">product.justification.code.search</field>
+        <field name="name">product.justification.code.search.view</field>
         <field name="model">product.justification.code</field>
+        <field name="type">search</field>
         <field name="arch" type="xml">
             <search string="Justification codes">
                 <field name="code"/>
@@ -16,9 +17,10 @@
         </field>
     </record>
 
-    <record id="product_justification_code_tree_view" model="ir.ui.view">
-        <field name="name">product.justification.code.list</field>
+    <record id="product_justification_code_list_view" model="ir.ui.view">
+        <field name="name">product.justification.code.list.view</field>
         <field name="model">product.justification.code</field>
+        <field name="type">list</field>
         <field name="arch" type="xml">
             <list string="Justification codes" editable="top" duplicate="False">
                 <field name="code"/>

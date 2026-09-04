@@ -2,8 +2,8 @@
 <odoo>
 
     <!-- Vue Formulaire -->
-    <record id="product_purchase_view_form" model="ir.ui.view">
-        <field name="name">product.purchase.view.form</field>
+    <record id="product_purchase_form_view" model="ir.ui.view">
+        <field name="name">product.purchase.form.view</field>
         <field name="model">product.purchase</field>
         <field name="type">form</field>
         <field name="arch" type="xml">
@@ -23,8 +23,8 @@
     </record>
 
     <!-- Vue Liste -->
-    <record id="product_purchase_view_list" model="ir.ui.view">
-        <field name="name">product.purchase.view.list</field>
+    <record id="product_purchase_list_view" model="ir.ui.view">
+        <field name="name">product.purchase.list.view</field>
         <field name="model">product.purchase</field>
         <field name="type">list</field>
         <field name="arch" type="xml">

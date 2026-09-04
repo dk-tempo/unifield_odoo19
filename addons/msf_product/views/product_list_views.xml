@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="product_list_view_action" model="ir.actions.act_window">
+        <field name="name">Products lists</field>
+        <field name="res_model">product.list</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <record id="product_list_search_view" model="ir.ui.view">
+        <field name="name">product.list.search.view</field>
+        <field name="model">product.list</field>
+        <field name="type">search</field>
+        <field name="arch" type="xml">
+            <search string="Products lists" >
+                <field name="ref"/>
+                <field name="name"/>
+                <field name="reviewer_id" />
+                <field name="parent_id" />
+                <field name="standard_list_ok" />
+                <field name="order_list_print_ok" />
+<!--                <field name="warehouse_id" />-->
+<!--                <field name="location_id" />-->
+                <field name="real_product_ids" />
+                <separator/>
+                <filter string="Creation date" name="filter_creation_date" date="creation_date"/>
+                <searchpanel>
+                    <field string="Type" name="type" select="multi"/>
+                </searchpanel>
+                <group>
+                    <filter string="Parent List" name="group_by_parent_id" context="{'group_by': 'parent_id'}"/>
+                    <filter string="Creation Date" name="group_by_creation_date" context="{'group_by': 'creation_date'}"/>
+<!--                    <filter string="Warehouse" name="group_by_warehouse_id" context="{'group_by': 'warehouse_id'}"/>-->
+<!--                    <filter string="Stock Location" name="group_by_location_id" context="{'group_by': 'location_id'}"/>-->
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="product_list_list_view" model="ir.ui.view">
+        <field name="name">product.list.list.view</field>
+        <field name="model">product.list</field>
+        <field name="type">list</field>
+        <field name="arch" type="xml">
+            <list string="Product lists" edit="not from_sync" delete="not from_sync">
+                <field name="name"/>
+                <field name="ref" />
+                <field name="type" />
+                <field name="standard_list_ok" />
+                <field name="order_list_print_ok" />
+                <field name="nb_products" />
+            </list>
+        </field>
+    </record>
+
+    <record id="product_list_form_view" model="ir.ui.view">
+        <field name="name">product.list.form.view</field>
+        <field name="model">product.list</field>
+        <field name="type">form</field>
+        <field name="arch" type="xml">
+            <form string="Products lists" >
+                <sheet>
+                    <group string="General Information">
+                        <group>
+                            <field name="type" />
+                            <field name="name" />
+                            <field name="creator" />
+                        </group>
+                        <group>
+                            <field name="ref" />
+                            <field name="creation_date" />
+                            <field name="last_update_date" />
+                        </group>
+                        <newline/>
+                        <group>
+                            <field name="description" />
+                        </group>
+                        <newline/>
+                        <group>
+                            <group>
+                                <field name="standard_list_ok" />
+                            </group>
+                            <group>
+                                <field name="order_list_print_ok" />
+                            </group>
+<!--                            <field name="warehouse_id" />-->
+                        </group>
+                        <group>
+                            <field name="reviewer_id" />
+<!--                            <field name="location_id" />-->
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Products">
+                            <field name="product_ids" mode="list">
+                                <list editable="top">
+<!--                                    <field name="name" domain="[('list_ids', '=', parent.parent_id)]" />-->
+                                    <field name="name" />
+                                    <field name="comment" />
+                                    <field name="mml_status" />
+                                    <field name="msl_status" />
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Old Products">
+
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+</odoo>

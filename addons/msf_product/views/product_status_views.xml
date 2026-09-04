@@ -7,8 +7,9 @@
     </record>
 
     <record id="product_status_search_view" model="ir.ui.view">
-        <field name="name">product.status.search</field>
+        <field name="name">product.status.search.view</field>
         <field name="model">product.status</field>
+        <field name="type">search</field>
         <field name="arch" type="xml">
             <search string="Status">
                 <field name="name"/>
@@ -16,9 +17,10 @@
         </field>
     </record>
 
-    <record id="product_status_tree_view" model="ir.ui.view">
-        <field name="name">product.status.list</field>
+    <record id="product_status_list_view" model="ir.ui.view">
+        <field name="name">product.status.list.view</field>
         <field name="model">product.status</field>
+        <field name="type">list</field>
         <field name="arch" type="xml">
             <list string="Supply Source" create="False" edit="False" duplicate="False" delete="False">
                 <field name="name"/>

@@ -7,8 +7,9 @@
     </record>
 
     <record id="product_cold_chain_search_view" model="ir.ui.view">
-        <field name="name">product.cold_chain.search</field>
+        <field name="name">product.cold_chain.search.view</field>
         <field name="model">product.cold_chain</field>
+        <field name="type">search</field>
         <field name="arch" type="xml">
             <search string="Thermosensitivity">
                 <field name="name"/>
@@ -17,9 +18,10 @@
         </field>
     </record>
 
-    <record id="product_cold_chain_tree_view" model="ir.ui.view">
-        <field name="name">product.cold_chain.list</field>
+    <record id="product_cold_chain_list_view" model="ir.ui.view">
+        <field name="name">product.cold_chain.list.view</field>
         <field name="model">product.cold_chain</field>
+        <field name="type">list</field>
         <field name="arch" type="xml">
             <list string="Thermosensitivity" editable="top" duplicate="False">
                 <field name="name"/>

@@ -7,8 +7,9 @@
     </record>
 
     <record id="product_international_status_search_view" model="ir.ui.view">
-        <field name="name">product.international.status.search</field>
+        <field name="name">product.international.status.search.view</field>
         <field name="model">product.international.status</field>
+        <field name="type">search</field>
         <field name="arch" type="xml">
             <search string="Product creators">
                 <field name="name"/>
@@ -16,9 +17,10 @@
         </field>
     </record>
 
-    <record id="product_international_status_tree_view" model="ir.ui.view">
-        <field name="name">product.international.status.list</field>
+    <record id="product_international_status_list_view" model="ir.ui.view">
+        <field name="name">product.international.status.list.view</field>
         <field name="model">product.international.status</field>
+        <field name="type">list</field>
         <field name="arch" type="xml">
             <list string="Product Creators" editable="top" duplicate="False">
                 <field name="name"/>

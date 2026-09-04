@@ -5,18 +5,22 @@
               id="menu_products"
               sequence="20"
               web_icon="msf_product,static/img/products_unifield.png"
-              groups="base.group_user"/>
+              groups="base.group_user">
 
-    <menuitem id="product_products_menu"
+    <menuitem id="product_products_menu_menu" name="Products" sequence="10">
+        <menuitem id="product_products_menu"
               name="Products"
               action="product_product_view_action"
-              parent="menu_products"
               sequence="10"/>
+        <menuitem id="product_list_menu"
+              name="Products lists"
+              action="product_list_view_action"
+              sequence="20"/>
+    </menuitem>
 
     <menuitem id="product_purchases_menu"
               name="Product Purchases"
               action="product_purchase_view_action"
-              parent="menu_products"
               sequence="20"/>
-
+    </menuitem>
 </odoo>

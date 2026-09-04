@@ -83,8 +83,8 @@ class ProductProduct(models.Model):
     # donation_expense_account = fields.Many2one(string="Donation Account", comodel_name="account.account")
     # fnct_categ_id = fields.Many2one(string="Category", compute="_get_categ", search="_search_categ",
     #                                 comodel_name="product.category", readonly=True)
-    # list_ids = fields.Many2many(string="Lists", compute="_get_list_sublist", search="_search_list_sublist",
-    #                             comodel_name="product.list", readonly=True)
+    list_ids = fields.Many2many(string="Lists", compute="_get_list_sublist", search="_search_list_sublist",
+                                comodel_name="product.list", readonly=True)
     msfid = fields.Integer(string="MSFID", help="Hidden field for UniData")
     xmlid_code = fields.Char(string="Xmlid Code", size=18)
     sdref = fields.Char(string="SDref", compute="_get_sdref", search="_search_sdref", size=256, readonly=True)

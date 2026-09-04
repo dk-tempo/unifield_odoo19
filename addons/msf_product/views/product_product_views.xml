@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <!-- Vue Formulaire -->
-    <record id="product_product_view_form" model="ir.ui.view">
-        <field name="name">product.product.view.form</field>
+    <record id="product_product_form_view" model="ir.ui.view">
+        <field name="name">product.product.form.view</field>
         <field name="model">product.product</field>
         <field name="type">form</field>
         <field name="arch" type="xml">
@@ -231,8 +231,8 @@
     </record>
 
     <!-- Vue Liste -->
-    <record id="product_product_view_list" model="ir.ui.view">
-        <field name="name">product.product.view.list</field>
+    <record id="product_product_list_view" model="ir.ui.view">
+        <field name="name">product.product.list.view</field>
         <field name="model">product.product</field>
         <field name="type">list</field>
         <field name="arch" type="xml">
@@ -253,8 +253,8 @@
     </record>
 
     <!-- Vue Recherche -->
-    <record id="product_product_view_search" model="ir.ui.view">
-        <field name="name">product.product.view.search</field>
+    <record id="product_product_search_view" model="ir.ui.view">
+        <field name="name">product.product.search.view</field>
         <field name="model">product.product</field>
         <field name="type">search</field>
         <field name="arch" type="xml">

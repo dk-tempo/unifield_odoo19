@@ -7,8 +7,9 @@
     </record>
 
     <record id="product_heat_sensitive_search_view" model="ir.ui.view">
-        <field name="name">product.heat_sensitive.search</field>
+        <field name="name">product.heat_sensitive.search.view</field>
         <field name="model">product.heat_sensitive</field>
+        <field name="type">search</field>
         <field name="arch" type="xml">
             <search string="Temperature sensitive">
                 <field name="name"/>
@@ -16,9 +17,10 @@
         </field>
     </record>
 
-    <record id="product_heat_sensitive_tree_view" model="ir.ui.view">
-        <field name="name">product.heat_sensitive.list</field>
+    <record id="product_heat_sensitive_list_view" model="ir.ui.view">
+        <field name="name">product.heat_sensitive.list.view</field>
         <field name="model">product.heat_sensitive</field>
+        <field name="type">list</field>
         <field name="arch" type="xml">
             <list string="Temperature sensitive" editable="top" duplicate="False">
                 <field name="name"/>
