@@ -1,0 +1,26 @@
+.LeftLines {
+    font-family: Helvetica, sans-serif;
+    /*font-size: 15.0px;*/
+    text-align: left;
+    /*line-height: 15.0px;*/
+}
+.BoldLeftLines {
+    font-family: Helvetica-Bold, sans-serif, bold;
+    /*font-size: 15.0px;*/
+    text-align: left;
+    /*line-height: 15.0px;*/
+}
+.BBigLines {
+    font-family: Helvetica-Bold, sans-serif, bold;
+    font-size: 24px;
+    text-align: center;
+    vertical-align: middle;
+    border: 10px solid black;
+}
+.WhiteSpace {
+    height: 40px;
+}
+.AboveLines {
+    padding-bottom: 5px;
+    border-bottom: 2px solid black;
+}

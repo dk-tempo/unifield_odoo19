@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="action_report_product_list_report" model="ir.actions.report">
+            <field name="name">Product List / Sub-List</field>
+            <field name="model">product.list</field>
+            <field name="report_type">qweb-pdf</field>
+            <field name="report_name">msf_product.product_list_report</field>
+            <field name="report_file">msf_product.product_list_report</field>
+            <field name="paperformat_id" ref="msf_product.paperformat_report_landscape"/>
+            <field name="print_report_name">'Product List.pdf'</field>
+            <field name="binding_model_id" ref="msf_product.model_product_list"/>
+            <field name="binding_type">report</field>
+        </record>
+    </data>
+</odoo>

@@ -7,7 +7,7 @@
             <t t-foreach="docs" t-as="o">
                 <t t-if="o.company_id" t-set="company" t-value="o.company_id"/>
                 <t t-call="web.basic_layout">
-                    <link rel="stylesheet" type="text/css" href="/msf_product/static/css/report_styles.css"/>
+                    <link rel="stylesheet" type="text/css" href="/msf_product/static/css/product_labels_report_styles.css"/>
 
                     <!-- SET VARIABLES (Depending on model) -->
                     <t t-if="doc_model == 'product.product'">

@@ -82,27 +82,38 @@
                             <group>
                                 <field name="order_list_print_ok" />
                             </group>
-<!--                            <field name="warehouse_id" />-->
+                            <group colspan="2">
+                                <field name="parent_id" invisible="type != 'sublist'" />
+<!--                            <field name="warehouse_id" required="type == 'sublist' and not location_id" />-->
+                            </group>
                         </group>
                         <group>
                             <field name="reviewer_id" />
-<!--                            <field name="location_id" />-->
+                            <field name="nb_products" invisible="1" />
+<!--                            <field name="location_id" required="type == 'sublist' and not warehouse_id" />-->
                         </group>
                     </group>
                     <notebook>
                         <page string="Products">
-                            <field name="product_ids" mode="list">
-                                <list editable="top">
-<!--                                    <field name="name" domain="[('list_ids', '=', parent.parent_id)]" />-->
-                                    <field name="name" />
-                                    <field name="comment" />
-                                    <field name="mml_status" />
-                                    <field name="msl_status" />
-                                </list>
-                            </field>
+                            <group string="Products">
+                                <field name="product_ids" nolabel="1" mode="list" colspan="2">
+                                    <list editable="top">
+                                        <field name="name" domain="[('list_ids', '=', parent.parent_id)]" />
+                                        <field name="comment" />
+                                        <field name="mml_status" />
+                                        <field name="msl_status" />
+                                    </list>
+                                </field>
+                            </group>
                         </page>
                         <page string="Old Products">
-
+                            <field name="old_product_ids" nolabel="1" mode="list" colspan="2" readonly="1">
+                                <list editable="top">
+                                    <field name="removal_date" />
+                                    <field name="name" domain="[('list_ids', '=', parent.parent_id)]" />
+                                    <field name="comment" />
+                                </list>
+                            </field>
                         </page>
                     </notebook>
                 </sheet>

@@ -45,6 +45,7 @@ class ProductProduct(models.Model):
     price_margin = fields.Float(string="Variant Price Margin", digits=(16, 2), default=1.0)
     # pricelist_id = fields.Many2one(string="Pricelist", comodel_name="product.pricelist")
     name_template = fields.Char(related="product_tmpl_id.name", string="Description (deprecated)")
+    display_name = fields.Char(compute="_get_display_name", store=False, size=256)
     expected_prod_creator = fields.Boolean(string="Expected Product Creator for Product Mass Update",
                                            compute="_get_expected_prod_creator", search="_expected_prod_creator_search",
                                            readonly=True)
@@ -302,6 +303,11 @@ class ProductProduct(models.Model):
                                       comodel_name="uom.category", readonly=True)
 
     # Compute methods
+    @api.depends('default_code', 'name_template')
+    def _get_display_name(self):
+        for record in self:
+            record.display_name = '[%s] %s' % (record.default_code, record.name_template)
+
     def _product_available(self):
         """"""
         for record in self:
@@ -345,7 +351,7 @@ class ProductProduct(models.Model):
     def _get_list_sublist(self):
         """"""
         for record in self:
-            record.list_ids = None
+            record.list_ids = self.env['product.list.line'].search([('name', '=', record.id)]).list_id.ids
 
     def _get_sdref(self):
         """"""
@@ -531,8 +537,11 @@ class ProductProduct(models.Model):
         return [('id', operator, value)]
 
     def _search_list_sublist(self, operator, value):
-        """"""
-        return [('id', operator, value)]
+        """
+        Filter the search according to the operator and value
+        """
+        lists = self.env['product.list'].search([('id', operator, value)])
+        return lists and [('id', 'in', lists.product_ids.name.ids)] or []
 
     def _src_available_for_restriction(self, operator, value):
         """"""

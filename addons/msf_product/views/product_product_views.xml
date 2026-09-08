@@ -169,12 +169,19 @@
                             </group>
                             <group>
                                 <group string="Lists/Sublists">
+                                    <field name="list_ids" mode="list" nolabel="1" colspan="2">
+                                        <list string="Lists/Sublists" editable="top">
+                                            <field name="type" />
+                                            <field name="name" />
+                                            <field name="ref" />
+                                        </list>
+                                    </field>
                                 </group>
                                 <group string="Code remarks section">
                                 </group>
                             </group>
                             <group string="Associated products">
-                                <field name="options_ids" nolabel="1"/>
+                                <field name="options_ids" nolabel="1" colspan="2"/>
                             </group>
                         </page>
                         <page string="Suppliers">

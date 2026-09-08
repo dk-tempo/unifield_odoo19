@@ -35,10 +35,13 @@
 
         "reports/product_reports.xml",
         "reports/product_labels_templates.xml",
+        "reports/product_list_reports.xml",
+        "reports/product_list_templates.xml",
     ],
     "assets": {
         "web.report_assets_common": [
-            "msf_product/static/css/report_styles.css",
+            "msf_product/static/css/product_labels_report_styles.css",
+            "msf_product/static/css/product_list_report_styles.css",
         ],
     },
     "installable": True,
