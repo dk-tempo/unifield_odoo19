@@ -35,7 +35,6 @@
 
         "reports/product_reports.xml",
         "reports/product_labels_templates.xml",
-        "reports/product_list_reports.xml",
         "reports/product_list_templates.xml",
     ],
     "assets": {

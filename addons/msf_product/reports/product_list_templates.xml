@@ -1,144 +1,155 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
+    <template id="product_list_report_layout">
+        <!-- FIXME: custom header does not appear -->
+        <div t-attf-class="header o_company_#{company.id}_layout">
+            <img src="/msf_product/static/img/msf.png" />
+        </div>
+        <div t-attf-class="article o_report_layout_standard o_table_standard o_company_#{company.id}_layout">
+            <t t-out="0"/>
+        </div>
+        <div t-attf-class="footer o_standard_footer o_company_#{company.id}_layout">
+                <div class="footer-page-count text-end fw-light m-0 p-0" style="font-size:13px !important;position:absolute;top:55px;right:25px;">
+                    <div class="" t-if="report_type == 'pdf'" >
+                        Page: <span class="page"/> / <span class="topage"/>
+                    </div>
+                </div>
+        </div>
+    </template>
     <!-- Template Product List / Sub-List -->
     <template id="product_list_report">
         <t t-call="web.html_container">
             <t t-foreach="docs" t-as="o">
-<!--                <t t-if="o.company_id" t-set="company" t-value="o.company_id"/>-->
-                <t t-call="web.basic_layout">
-                    <link rel="stylesheet" type="text/css" href="/msf_product/static/css/product_list_report_styles.css"/>
-
-                    <!-- Logo -->
-                    <div>
-                        <div class="row">
-                            <div class="col">
-                                <img src="/msf_product/static/img/msf.png" />
+                <t t-if="o.company_id" t-set="company" t-value="o.company_id"/>
+                <t t-call="msf_product.product_list_report_layout">
+                    <link rel="stylesheet" type="text/css" href="/msf_product/static/css/report_styles.css"/>
+                    <div class="page">
+                        <p class="Standard">
+                            <font color="white"> </font>
+                        </p>
+                        <!-- Instance data and title -->
+                        <div>
+                            <div class="row">
+                                <div class="col">
+                                    <p class="msf_left_lines_15">instance.name / instance.mission / instance.code</p>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col">
+                                    <p class="msf_bold_big_lines_border">PRODUCT LIST / SUB-LIST</p>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                    <p class="Standard">
-                        <font color="white"> </font>
-                    </p>
-                    <!-- Instance data and title -->
-                    <div>
-                        <div class="row">
-                            <div class="col">
-                                <p class="LeftLines">instance.name / instance.mission / instance.code</p>
+                        <p class="Standard">
+                            <font color="white"> </font>
+                        </p>
+                        <!-- Product List header -->
+                        <div>
+                            <div class="row">
+                                <div class="col-2">
+                                    <p class="msf_bold_left_lines_15">List Type :</p>
+                                </div>
+                                <div class="col-2">
+                                    <p class="msf_left_lines_15" t-out="dict(o.fields_get()['type']['selection'])[o.type]"/>
+                                </div>
+                                <div class="col-2">
+                                    <p class="msf_bold_left_lines_15">Created on :</p>
+                                </div>
+                                <div class="col-2">
+                                    <p class="msf_left_lines_15" t-out="o.creation_date" t-options='{"widget": "date"}'/>
+                                </div>
+                                <div class="col-4"/>
+                            </div>
+                            <div class="row">
+                                <div class="col-2">
+                                    <p class="msf_bold_left_lines_15">Name :</p>
+                                </div>
+                                <div class="col-2">
+                                    <p class="msf_left_lines_15" t-out="o.name"/>
+                                </div>
+                                <div class="col-2">
+                                    <p class="msf_bold_left_lines_15">Last modified on :</p>
+                                </div>
+                                <div class="col-2">
+                                    <p class="msf_left_lines_15" t-out="o.last_update_date" t-options='{"widget": "date"}'/>
+                                </div>
+                                <div class="col-4"/>
+                            </div>
+                            <div class="row">
+                                <div class="col-2">
+                                    <p class="msf_bold_left_lines_15">Reference :</p>
+                                </div>
+                                <div class="col-2">
+                                    <p class="msf_left_lines_15" t-out="o.ref"/>
+                                </div>
+                                <div class="col-2">
+                                    <p class="msf_bold_left_lines_15">Warehouse :</p>
+                                </div>
+                                <div class="col-2">
+                                    <p class="msf_left_lines_15"/>
+                                </div>
+                                <div class="col-4"/>
+                            </div>
+                            <div class="row">
+                                <div class="col-2">
+                                    <p class="msf_bold_left_lines_15">Parent List :</p>
+                                </div>
+                                <div class="col-2">
+                                    <p class="msf_left_lines_15" t-out="o.parent_id and o.parent_id.name or ''"/>
+                                </div>
+                                <div class="col-2">
+                                    <p class="msf_bold_left_lines_15">Location :</p>
+                                </div>
+                                <div class="col-2">
+                                    <p class="msf_left_lines_15"/>
+                                </div>
+                                <div class="col-4"/>
                             </div>
                         </div>
-                        <div class="row">
-                            <div class="col">
-                                <p class="BBigLines">PRODUCT LIST / SUB-LIST</p>
+                        <p class="WhiteSpace"/>
+                        <!-- Product List lines -->
+                        <div>
+                            <div class="row">
+                                <div class="col">
+                                    <p class="msf_bold_left_lines_15 msf_above_lines">Products</p>
+                                </div>
                             </div>
-                        </div>
-                    </div>
-                    <p class="Standard">
-                        <font color="white"> </font>
-                    </p>
-                    <!-- Product List header -->
-                    <div>
-                        <div class="row">
-                            <div class="col-2">
-                                <p class="BoldLeftLines">List Type :</p>
-                            </div>
-                            <div class="col-2">
-                                <p class="LeftLines" t-out="dict(o.fields_get()['type']['selection'])[o.type]"/>
-                            </div>
-                            <div class="col-2">
-                                <p class="BoldLeftLines">Created on :</p>
-                            </div>
-                            <div class="col-2">
-                                <p class="LeftLines" t-out="o.creation_date" t-options='{"widget": "date"}'/>
-                            </div>
-                            <div class="col-4"/>
-                        </div>
-                        <div class="row">
-                            <div class="col-2">
-                                <p class="BoldLeftLines">Name :</p>
-                            </div>
-                            <div class="col-2">
-                                <p class="LeftLines" t-out="o.name"/>
-                            </div>
-                            <div class="col-2">
-                                <p class="BoldLeftLines">Last modified on :</p>
-                            </div>
-                            <div class="col-2">
-                                <p class="LeftLines" t-out="o.last_update_date" t-options='{"widget": "date"}'/>
-                            </div>
-                            <div class="col-4"/>
-                        </div>
-                        <div class="row">
-                            <div class="col-2">
-                                <p class="BoldLeftLines">Reference :</p>
-                            </div>
-                            <div class="col-2">
-                                <p class="LeftLines" t-out="o.ref"/>
-                            </div>
-                            <div class="col-2">
-                                <p class="BoldLeftLines">Warehouse :</p>
-                            </div>
-                            <div class="col-2">
-                                <p class="LeftLines"/>
-                            </div>
-                            <div class="col-4"/>
-                        </div>
-                        <div class="row">
-                            <div class="col-2">
-                                <p class="BoldLeftLines">Parent List :</p>
-                            </div>
-                            <div class="col-2">
-                                <p class="LeftLines" t-out="o.parent_id and o.parent_id.name or ''"/>
-                            </div>
-                            <div class="col-2">
-                                <p class="BoldLeftLines">Location :</p>
-                            </div>
-                            <div class="col-2">
-                                <p class="LeftLines"/>
-                            </div>
-                            <div class="col-4"/>
-                        </div>
-                    </div>
-                    <p class="WhiteSpace"/>
-                    <!-- Product List lines -->
-                    <div>
-                        <div class="row">
-                            <div class="col">
-                                <p class="BoldLeftLines AboveLines">Products</p>
-                            </div>
-                        </div>
-                        <table class="table o_main_table table-borderless">
-                            <!-- In case we want to repeat the header, remove "display: table-row-group" -->
-                            <thead style="display: table-row-group">
-                                <tr>
-                                    <th name="th_product_code" class="BoldLeftLines">Ref.</th>
-                                    <th name="th_product_name" class="BoldLeftLines">Name</th>
-                                    <th name="th_comment" class="BoldLeftLines">Comment</th>
-                                    <th name="th_mml_status" class="BoldLeftLines">MML</th>
-                                    <th name="th_msl_status" class="BoldLeftLines">MSL</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <t t-foreach="o.product_ids" t-as="line">
+                            <table class="table o_ignore_layout_styling table-borderless msf_table">
+                                <thead>
+                                    <!-- FIXME: column names are not repeated after the first page -->
                                     <tr>
-                                        <td name="td_product_code">
-                                            <p class="LeftLines" t-out="line.name.default_code"/>
-                                        </td>
-                                        <td name="td_product_name">
-                                            <p class="LeftLines" t-out="line.name.name"/>
-                                        </td>
-                                        <td name="td_comment">
-                                            <p class="LeftLines" t-out="line.comment"/>
-                                        </td>
-                                        <td name="td_mml_status">
-                                            <p class="LeftLines" t-out="dict(line.fields_get()['mml_status']['selection'])[line.mml_status]"/>
-                                        </td>
-                                        <td name="td_msl_status">
-                                            <p class="LeftLines" t-out="dict(line.fields_get()['msl_status']['selection'])[line.msl_status]"/>
-                                        </td>
+                                        <th name="th_product_code" class="msf_bold_left_lines_15">Ref.</th>
+                                        <th name="th_product_name" class="msf_bold_left_lines_15">Name</th>
+                                        <th name="th_comment" class="msf_bold_left_lines_15">Comment</th>
+                                        <th name="th_mml_status" class="msf_bold_left_lines_15">MML</th>
+                                        <th name="th_msl_status" class="msf_bold_left_lines_15">MSL</th>
                                     </tr>
-                                </t>
-                            </tbody>
-                        </table>
+                                </thead>
+                                <tbody>
+                                    <t t-foreach="o.product_ids" t-as="line">
+                                        <tr>
+                                            <td name="td_product_code">
+                                                <div class="msf_left_lines_15" t-out="line.name.default_code"/>
+                                            </td>
+                                            <td name="td_product_name">
+                                                <div class="msf_left_lines_15" t-out="line.name.name"/>
+                                            </td>
+                                            <td name="td_comment">
+                                                <div class="msf_left_lines_15" t-out="line.comment"/>
+                                            </td>
+                                            <td name="td_mml_status">
+                                                <div t-att-class="(line.mml_status=='F' or line.msl_status=='F') and 'msf_left_lines_red_15' or 'msf_left_lines_15'"
+                                                     t-out="dict(line.fields_get()['mml_status']['selection'])[line.mml_status]"/>
+                                            </td>
+                                            <td name="td_msl_status">
+                                                <div t-att-class="(line.mml_status=='F' or line.msl_status=='F') and 'msf_left_lines_red_15' or 'msf_left_lines_15'"
+                                                     t-out="dict(line.fields_get()['msl_status']['selection'])[line.msl_status]"/>
+                                            </td>
+                                        </tr>
+                                    </t>
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
                 </t>
             </t>

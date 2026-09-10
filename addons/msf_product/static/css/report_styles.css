@@ -1,0 +1,73 @@
+.msf_lines  {
+    font-family: Helvetica, sans-serif;
+    font-size: 6.0px;
+    text-align: start;
+    line-height: 7.0px;
+}
+.msf_left_lines_15 {
+    font-family: Helvetica, sans-serif;
+    font-size: 15.0px;
+    text-align: start;
+    line-height: 15.0px;
+}
+.msf_left_lines_red_15 {
+    font-family: Helvetica, sans-serif;
+    font-size: 15.0px;
+    text-align: start;
+    line-height: 15.0px;
+    color: red;
+}
+.msf_bold_left_lines_15 {
+    /*font-family: Helvetica-Bold, sans-serif, bold;*/
+    font-family: sans-serif;
+    font-weight: bold;
+    font-size: 15.0px;
+    text-align: start;
+    line-height: 15.0px;
+}
+.msf_right_lines_15 {
+    font-family: Helvetica, sans-serif;
+    font-size: 15.0px;
+    text-align: end;
+    line-height: 15.0px;
+}
+.msf_bold_right_lines_15 {
+    /*font-family: Helvetica-Bold, sans-serif, bold;*/
+    font-family: sans-serif;
+    font-weight: bold;
+    font-size: 15.0px;
+    text-align: end;
+}
+.msf_big_lines {
+    font-family: Helvetica, sans-serif;
+    font-size: 24px;
+    text-align: center;
+    vertical-align: middle;
+    padding-top: 15px;
+}
+.msf_bold_big_lines_border {
+    /*font-family: Helvetica-Bold, sans-serif, bold;*/
+    font-family: sans-serif;
+    font-weight: bold;
+    font-size: 24px;
+    text-align: center;
+    vertical-align: middle;
+    border: 2px solid black;
+}
+.msf_huge_lines {
+    font-family: Helvetica, sans-serif;
+    font-size: 38px;
+    text-align: center;
+}
+.msf_white_space {
+    height: 40px;
+}
+.msf_big_white_space {
+    height: 40px;
+}
+.msf_above_lines {
+    border-bottom: 2px solid black;
+}
+.msf_table thead th {
+    border: none;
+}

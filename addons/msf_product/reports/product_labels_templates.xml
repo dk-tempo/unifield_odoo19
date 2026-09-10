@@ -7,7 +7,7 @@
             <t t-foreach="docs" t-as="o">
                 <t t-if="o.company_id" t-set="company" t-value="o.company_id"/>
                 <t t-call="web.basic_layout">
-                    <link rel="stylesheet" type="text/css" href="/msf_product/static/css/product_labels_report_styles.css"/>
+                    <link rel="stylesheet" type="text/css" href="/msf_product/static/css/report_styles.css"/>
 
                     <!-- SET VARIABLES (Depending on model) -->
                     <t t-if="doc_model == 'product.product'">
@@ -43,36 +43,36 @@
                                     <img src="/msf_product/static/img/msf.png" />
                                 </div>
                                 <div class="col-6">
-                                    <p class="BigLines" t-out="product_code"/>
+                                    <p class="msf_big_lines" t-out="product_code"/>
                                 </div>
                                 <div class="col-3">
                                     <img src="/msf_product/static/img/unifield.png" />
                                 </div>
                             </div>
                         </div>
-                        <p class="WhiteSpace">
+                        <p class="msf_white_space">
                             <font color="white"> </font>
                         </p>
                         <!-- Batch numbers and expiry -->
                         <div t-if="prodlot or exp_date">
                             <div class="row">
                                 <div class="col">
-                                    <p class="BigLines"/>
+                                    <p class="msf_big_lines"/>
                                 </div>
                                 <div t-if="prodlot" class="col-2">
-                                    <p class="BoldRightLines">Btch nr</p>
+                                    <p class="msf_bold_right_lines_15">Btch nr</p>
                                 </div>
                                 <div t-if="prodlot" class="col-4">
-                                    <p class="LeftLines" t-out="prodlot"/>
+                                    <p class="msf_left_lines_15" t-out="prodlot"/>
                                 </div>
                                 <div t-if="exp_date" class="col-2">
-                                    <p class="BoldRightLines">Expiry</p>
+                                    <p class="msf_bold_right_lines_15">Expiry</p>
                                 </div>
                                 <div t-if="exp_date" class="col-2">
-                                    <p class="RightLines" t-out="exp_date"/>
+                                    <p class="msf_right_lines_15" t-out="exp_date"/>
                                 </div>
                                 <div class="col">
-                                    <p class="BigLines"/>
+                                    <p class="msf_big_lines"/>
                                 </div>
                             </div>
                         </div>
@@ -84,22 +84,22 @@
                             <div class="row">
                                 <div class="col"/>
                                 <div class="col-10 align-center">
-                                    <p class="HugeLines" t-out="product_desc"/>
+                                    <p class="msf_huge_lines" t-out="product_desc"/>
                                 </div>
                                 <div class="col"/>
                             </div>
                         </div>
                         <!-- Separator -->
                         <t t-if="i != 'last'">
-                            <p class="BigWhiteSpace"/>
+                            <p class="msf_big_white_space"/>
                             <div>
                                 <div class="row">
                                     <div class="col">
-                                        <p class="HugeLines">--------------------------------------------------------</p>
+                                        <p class="msf_huge_lines">--------------------------------------------------------</p>
                                     </div>
                                 </div>
                             </div>
-                            <p class="WhiteSpace"/>
+                            <p class="msf_white_space"/>
                         </t>
                     </t>
                 </t>

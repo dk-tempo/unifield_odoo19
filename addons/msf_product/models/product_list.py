@@ -32,6 +32,8 @@ class ProductList(models.Model):
                                         readonly=True, domain="[('in_any_product_list', '=', True)]")
     alert_msl_mml = fields.Char(string="Contains non-conform MML/MSL", compute="_get_header_msl_mml_alert", readonly=True)
     from_sync = fields.Boolean(string="Created by Sync", compute="_is_from_sync", readonly=True)
+    company_id = fields.Many2one(string="Company", comodel_name='res.company', required=True, index=True,
+                                 default=lambda self: self.env.company)
 
     _name_uniq = models.Constraint('unique(name)', 'A list or sublist with the same name already exists in the system!')
 
