@@ -1,0 +1,28 @@
+<templates xml:space="preserve">
+    <t t-name="filter_selector.FilterToolbar">
+        <div class="o_filter_selector mb-2 d-flex gap-2 align-items-center">
+            <Dropdown t-if="props.options.length">
+                <button class="btn btn-outline-secondary btn-sm dropdown-toggle">
+                    <t t-esc="selectedLabel"/>
+                </button>
+                <t t-set-slot="content">
+                    <t t-foreach="props.options" t-as="option" t-key="option_index">
+                        <DropdownItem onSelected="() => props.onSelect(option_index)">
+                            <t t-esc="option[0]"/>
+                        </DropdownItem>
+                    </t>
+                </t>
+            </Dropdown>
+
+            <t t-foreach="props.searchFields" t-as="field" t-key="field">
+                <input 
+                    type="text"
+                    class="form-control form-control-sm w-auto"
+                    t-att-placeholder="this.placeholderFor(field)"
+                    t-att-value="props.searchValues[field]"
+                    t-on-input="(ev) => this.onInput(field, ev)"
+                />
+            </t>
+        </div>
+    </t>
+</templates>

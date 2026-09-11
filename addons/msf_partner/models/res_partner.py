@@ -53,6 +53,9 @@ class ResPartner(models.Model):
     credit_limit = fields.Float(string="Credit Limit")
     ean13 = fields.Char(string="EAN13", size=13)
     active = fields.Boolean(string="Active", default=1, )
+    state = fields.Selection(string="Partner Status",
+                             selection=[('active', 'Active'), ('phase_out', 'Phase Out'), ('inactive', 'Inactive')],
+                             readonly=True, default="active")
     customer = fields.Boolean(string="Customer", help="Check this box if the partner is a customer.",
                               default=_default_customer)
     supplier = fields.Boolean(string="Supplier",
@@ -66,6 +69,8 @@ class ResPartner(models.Model):
     email = fields.Char(string="E-mail", related="address.email", size=240)
     company_id = fields.Many2one(string="Company", comodel_name="res.company",
                                  default=lambda self: self.env.company)
+    tax_identification_number = fields.Char(string='Tax Identification Number', size=15, help="Tax Identification Number")
+    business_registration_number = fields.Char(string='Business Registration Number', size=15, help="Business Registration Number")
     # property_product_pricelist = fields.Many2one(string="Field orders default currency",
     #                                              comodel_name="product.pricelist",
     #                                              help="This currency will be used, instead of the default one, for field orders to the current partner",

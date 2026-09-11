@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Home menu tile -->
+    <menuitem name="Purchases"
+              id="menu_purchases"
+              sequence="30"
+              web_icon="msf_purchase,static/img/purchases_unifield.png"
+              groups="base.group_user">
+
+        <menuitem id="purchase_management_menu" name="Purchase Management" sequence="10">
+            <menuitem id="purchase_menu"
+                  name="Purchase Orders"
+                  action="purchase_order_view_action"
+                  sequence="10"/>
+        </menuitem>
+    </menuitem>
+</odoo>

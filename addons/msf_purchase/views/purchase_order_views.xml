@@ -1,0 +1,570 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="purchase_order_view_action" model="ir.actions.act_window">
+        <field name="name">Purchase Orders</field>
+        <field name="res_model">purchase.order</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <record id="purchase_order_search_view" model="ir.ui.view">
+        <field name="name">purchase.order.search.view</field>
+        <field name="model">purchase.order</field>
+        <field name="type">search</field>
+        <field name="arch" type="xml">
+            <search string="Purchase Orders" >
+                <field name="name"/>
+            </search>
+        </field>
+    </record>
+
+    <record id="purchase_order_list_view" model="ir.ui.view">
+        <field name="name">purchase.order.list.view</field>
+        <field name="model">purchase.order</field>
+        <field name="type">list</field>
+        <field name="arch" type="xml">
+            <list string="Purchase Orders" delete="False">
+                <field name="name"/>
+                <field name="order_type" />
+                <field name="priority" />
+                <field name="categ" />
+                <field name="date_order" />
+                <field name="short_partner_ref" />
+                <field name="partner_id" />
+                <field name="delivery_requested_date" />
+                <field name="origin" />
+                <field name="short_customer_ref" />
+                <field name="dest_partner_names" />
+                <field name="details" />
+                <field name="line_count"/>
+                <field name="shipped_rate" widget="progressbar"/>
+                <field name="invoiced_rate" widget="progressbar"/>
+                <field name="amount_total"/>
+<!--                <field name="pricelist_id" string="Currency"/>-->
+                <field name="state"/>
+<!--                <button name="delete_button" type="object" icon="gtk-del" string="Delete" states="draft" confirm="Do you really want to delete selected record(s) ?"/>-->
+            </list>
+        </field>
+    </record>
+
+    <record id="purchase_order_form_view" model="ir.ui.view">
+        <field name="name">purchase.order.form.view</field>
+        <field name="model">purchase.order</field>
+        <field name="type">form</field>
+        <field name="arch" type="xml">
+            <form string="Purchase Orders" >
+                <sheet>
+                    <group>
+                        <field name="requested_date_in_past" invisible="1"/>
+                        <field name="update_in_progress" invisible="1" readonly="1"/>
+                        <field name="is_validated_and_synced" invisible="1"/>
+                        <field name="po_version" invisible="1"/>
+                        <field name="msg_big_qty" invisible="1"/>
+                        <field name="alert_msl_mml" invisible="1"/>
+                        <field name="catalogue_display_tab" invisible="1" />
+                        <field name="catalogue_exists_text" invisible="1" />
+<!--                        <group>-->
+<!--                            <html>-->
+<!--                                <p id="big_amount" style="display:none; text-align:center; color:#f27d0c; font-weight:bold; font-size:1.2em">-->
+<!--                                    <translate>-->
+<!--                                        WARNING: The Total amount of the following lines is more than 10 digits. Please check that the Qty and Unit price are correct to avoid loss of exact information:-->
+<!--                                    </translate>-->
+<!--                                </p>-->
+<!--                                <p id="view_order_requested_in_past" style="display:none; text-align:center; color:#f27d0c; font-weight:bold; font-size:1.2em">-->
+<!--                                    <translate>-->
+<!--                                        WARNING: The requested date of this purchase order is in the past.-->
+<!--                                    </translate>-->
+<!--                                    <br/>-->
+<!--                                </p>-->
+<!--                                <p id="view_purchase_order_form_inherit_is_validated_and_synced" style="display:none; text-align:center; color: red; font-weight: bold; font-size: 1.2em;">-->
+<!--                                    <translate>-->
+<!--                                        WARNING: This PO has already been synched, any modifications you make will not be considered.-->
+<!--                                    </translate>-->
+<!--                                    <br/>-->
+<!--                                </p>-->
+<!--                                <p id="view_purchase_order_already_auto_exported" style="display:none; text-align:center; color: red; font-weight: bold; font-size: 1.2em;">-->
+<!--                                    <translate>-->
+<!--                                        WARNING: This PO has already been exported for Vertical Integration; any changes you make will not be sent to the ESC, please contact Supplier directly.-->
+<!--                                    </translate>-->
+<!--                                    <br/>-->
+<!--                                </p>-->
+<!--                                <p id="nr_lines" style="display:none; text-align:center; color:#f27d0c; font-weight:bold; font-size:1.2em">-->
+<!--                                    <translate>WARNING: Order line(s) not synchronized, code(s) does not exist</translate>-->
+<!--                                </p>-->
+<!--                                <p id="nr_ad_lines" style="display:none; text-align:center; color:#f27d0c; font-weight:bold; font-size:1.2em">-->
+<!--                                    <translate>WARNING: Order line(s) not synchronized, please add an AD on line(s): </translate>-->
+<!--                                </p>-->
+<!--                                <p id="msg_ad_lines_missing" style="display:none; text-align:center; color:#f27d0c; font-weight:bold; font-size:1.2em">-->
+<!--                                    <translate>WARNING: Analytic distribution is missing for the lines </translate>-->
+<!--                                </p>-->
+<!--                                <p id="msl_mml" style="display:none; text-align:center; color:red; font-weight:bold; font-size:1.2em" />-->
+<!--                                <p id="view_purchase_order_locked_for_signature" style="display:none; text-align:center; color: red; font-weight: bold; font-size: 1.2em;">-->
+<!--                                    <translate>-->
+<!--                                        WARNING: This Purchase Order is locked for e-signature. To edit it, click the "Remove signatures to unlock PO" button.-->
+<!--                                    </translate>-->
+<!--                                    <br/>-->
+<!--                                </p>-->
+
+<!--                                <script language="javascript">-->
+<!--                                    var original_partner = false;-->
+<!--                                    function refresh_catalogue() {-->
+<!--                                        var catalogue_text = ''-->
+<!--                                        if ($('#partner_id').val() == original_partner) {-->
+<!--                                            catalogue_text = $('#catalogue_exists_text').val() ||  $('#catalogue_exists_text').text();-->
+<!--                                        }-->
+<!--                                        $('#order_line_extra_text').html(catalogue_text);-->
+<!--                                    }-->
+
+<!--                                    function hide_esc_selector() {-->
+<!--                                        // Hide the ESC Confirmed filter if the PO does not have an ESC Partner-->
+<!--                                        var partner_type = $('#partner_type').val() || $('#partner_type').text().trim();-->
+<!--                                        if (partner_type == 'esc' || partner_type == 'ESC') {-->
+<!--                                            $('#order_line_filter_0').show();-->
+<!--                                        }-->
+<!--                                        else {-->
+<!--                                            $('#order_line_filter_0').hide();-->
+<!--                                        }-->
+<!--                                    }-->
+
+<!--                                    function on_reload_order_line() {-->
+<!--                                        hide_esc_selector();-->
+<!--                                        refresh_catalogue();-->
+<!--                                    }-->
+<!--                                    $(document).ready(function() {-->
+<!--                                         original_partner = $('#partner_id').val();-->
+<!--                                         new ListView('order_line').after_reload = on_reload_order_line;-->
+<!--                                         $('#catalogue_exists_text').change(refresh_catalogue);-->
+<!--                                         on_reload_order_line();-->
+<!--                                    });-->
+
+<!--                                    var alert_msl_mml = $('#alert_msl_mml').val() || $('#alert_msl_mml').text();-->
+<!--                                    if (alert_msl_mml) {-->
+<!--                                        $('#msl_mml').html(alert_msl_mml);-->
+<!--                                        $('#msl_mml').show();-->
+<!--                                    }-->
+<!--                                    var is_big_amount = $('#msg_big_qty').val() || $('#msg_big_qty').text();-->
+<!--                                    if (is_big_amount) {-->
+<!--                                        $('#big_amount').append('&lt;span&gt;'+is_big_amount+'&lt;/span&gt;&lt;br/&gt;');-->
+<!--                                        $('#big_amount').show();-->
+<!--                                    }-->
+<!--                                    var is_in_past = $('#requested_date_in_past').val();-->
+<!--                                    if (is_in_past == "1") {-->
+<!--                                        msg_dom = $('#view_order_requested_in_past');-->
+<!--                                        msg_dom.show();-->
+<!--                                    }-->
+<!--                                    var is_synced = $('#is_validated_and_synced').val();-->
+<!--                                    if (is_synced == "1") {-->
+<!--                                        msg_dom = $('#view_purchase_order_form_inherit_is_validated_and_synced')-->
+<!--                                        msg_dom.show();-->
+<!--                                    }-->
+<!--                                    var is_exported = $('#auto_exported_ok').val();-->
+<!--                                    if (is_exported == "1") {-->
+<!--                                        msg_dom = $('#view_purchase_order_already_auto_exported')-->
+<!--                                        msg_dom.show();-->
+<!--                                    }-->
+<!--                                    var has_nr = $('#nb_creation_message_nr').val() || $('#nb_creation_message_nr').text();-->
+<!--                                    if (has_nr &amp;&amp; has_nr!= '0') {-->
+<!--                                        $('#nr_lines').show();-->
+<!--                                    }-->
+<!--                                    var has_ad_nr = $('#ad_lines_message_nr').val() || $('#ad_lines_message_nr').text();-->
+<!--                                    if (has_ad_nr) {-->
+<!--                                        $('#nr_ad_lines').append(has_ad_nr);-->
+<!--                                        $('#nr_ad_lines').show();-->
+<!--                                    }-->
+<!--                                    var has_ad_lines_missing = $('#ad_lines_missing_message').val() || $('#ad_lines_missing_message').text();-->
+<!--                                    if (has_ad_lines_missing) {-->
+<!--                                        $('#msg_ad_lines_missing').append(has_ad_lines_missing);-->
+<!--                                        $('#msg_ad_lines_missing').show();-->
+<!--                                    }-->
+<!--                                    var catalogue_text = $('#catalogue_exists_text').val() ||  $('#catalogue_exists_text').text();-->
+<!--                                    if (catalogue_text) {-->
+<!--                                         $('#order_line_extra_text').html(catalogue_text);-->
+<!--                                    }-->
+<!--                                    var is_doc_locked_for_sign = $('#doc_locked_for_sign').val();-->
+<!--                                    var allowed_to_be_signed_unsigned = $('#allowed_to_be_signed_unsigned').val();-->
+<!--                                    if (is_doc_locked_for_sign == "1" &amp;&amp; allowed_to_be_signed_unsigned == "1") {-->
+<!--                                        msg_dom = $('#view_purchase_order_locked_for_signature')-->
+<!--                                        msg_dom.show();-->
+<!--                                    }-->
+
+<!--                                </script>-->
+<!--                            </html>-->
+<!--                        </group>-->
+                        <group>
+                            <field name="push_fo" invisible="1"/>
+                            <field name="is_a_counterpart" invisible="1"/>
+                            <field name="nb_creation_message_nr" invisible="1"/>
+                            <field name="ad_lines_message_nr" invisible="1"/>
+                            <field name="ad_lines_missing_message" invisible="1"/>
+                            <group>
+                                <field name="name"/>
+<!--                                <field name="warehouse_id" on_change="onchange_warehouse_id(warehouse_id,order_type,dest_address_id)" widget="selection" readonly="state != 'draft'"/>-->
+<!--                                <field name="order_type" on_change="onchange_internal_type(order_type, partner_id, categ, dest_partner_id, warehouse_id, delivery_requested_date)" readonly="state != 'draft' or order_type == 'loan_return'"/>-->
+                                <field name="order_type" readonly="state != 'draft' or order_type == 'loan_return'"/>
+                                <field name="categ" on_change="onchange_categ(categ)" readonly="state != 'draft'"/>
+                            </group>
+                            <group>
+                                <field name="date_order"/>
+                                <field name="partner_ref" invisible="1"/>
+                                <field name="short_partner_ref" on_change="onchange_short_partner_ref(short_partner_ref)" readonly="partner_type not in ['external', 'esc'] or state not in ['draft', 'draft_p', 'validated']"/>
+                                <field name="priority" readonly="state not in ['draft', 'draft_p', 'validated']"/>
+                                <field name="details" readonly="state != 'draft'"/>
+                            </group>
+                            <group invisible="state in ['draft', 'draft_p', 'validated', 'validated_p']">
+                                <field name="invoiced" readonly="1"/>
+                                <field name="shipped" readonly="1"/>
+                                <field name="shipped_rate" invisible="True" widget="boolean"/> <!-- Put to boolean for the conditions below -->
+                            </group>
+                            <newline />
+                            <group>
+                                <field name="parent_order_name" readonly="True" invisible="not parent_order_name"/>
+                                <newline/>
+                                <field name="loan_duration" invisible="order_type not in ['loan', 'loan_return']" required="order_type in ['loan', 'loan_return']"/>
+                                <newline/>
+                                <field name="not_beyond_validated" invisible="1"/>
+                                <field name="show_default_msg" readonly="not not_beyond_validated"/>
+                                <field name="company_id" groups="base.group_multi_company" widget="selection"/>
+                            </group>
+                        </group>
+                    </group>
+<!--                    <newline/>-->
+<!--                    <group invisible="not analytic_distribution_id">-->
+<!--                        <button name="button_analytic_distribution" string="Analytical Distribution" type="object" icon="terp-check" context="context" invisible="not analytic_distribution_id"/>-->
+<!--                        <button name="button_reset_distribution" string="Reset AD at line level" type="object" icon="gtk-undelete" invisible="[state not in ['draft', 'draft_p', 'validated'] or doc_locked_for_sign"/>-->
+<!--                    </group>-->
+<!--                    <group invisible="not analytic_distribution_id">-->
+<!--                        <button name="button_analytic_distribution" string="Analytical Distribution" type="object" icon="terp-emblem-important" context="context" invisible="not analytic_distribution_id"/>-->
+<!--                        <button name="button_reset_distribution" string="Reset AD at line level" type="object" icon="gtk-undelete" invisible="[state not in ['draft', 'draft_p', 'validated'] or doc_locked_for_sign"/>-->
+<!--                    </group>-->
+<!--                    <field name="analytic_distribution_id" invisible="1"/>-->
+                    <notebook>
+                        <page string="Purchase Order">
+                            <field name="allocation_setup" invisible="1"/>
+                            <newline/>
+                            <group name="partner_info">
+                                <field name="po_from_ir" invisible="1"/>
+                                <field name="po_from_fo" invisible="1"/>
+                                <field name="canceled_end" invisible="1"/>
+                                <group>
+                                    <group>
+<!--                                        <field name="partner_id" on_change="onchange_partner_id(partner_id,date_order,est_transport_lead_time,order_type,context)" context="{'search_default_supplier':1}" domain="[('supplier', '=', True), ('id', '!=', company_id), ('check_partner_po', '=', {'order_type':order_type, 'partner_id': partner_id, 'split_po': related_sourcing_id}), ('partner_not_int', 'in', {'type':'po', 'ids':[active_id]})]" readonly="state != 'draft' or order_type == 'loan_return'"/>-->
+                                        <field name="partner_id" domain="[('supplier', '=', True), ('id', '!=', company_id)]" readonly="state != 'draft' or order_type == 'loan_return'"/>
+                                        <field name="partner_address_id" readonly="state not in ['draft', 'draft_p', 'validated']"/>
+                                        <field name="internal_type" string="Zone"/>
+                                        <field name="from_address" domain="[('partner_id', '=', company_id)]" readonly="state not in ['draft', 'draft_p', 'validated']"/>
+                                    </group>
+                                    <newline/>
+                                    <group>
+                                        <field name="stock_take_date" readonly="state not in ['draft', 'draft_p']" />
+<!--                                        <button name="update_date" string="Apply to lines" type="object" context="{'field_name': 'stock_take', 'type': 'purchase.order'}" icon="gtk-indent" invisible="state not in ['draft', 'draft_p'] or doc_locked_for_sign"/>-->
+                                    </group>
+                                </group>
+                                <group>
+                                    <group>
+                                        <field name="partner_type"/>
+                                        <field name="origin" readonly="1" widget="char"/>
+                                        <field name="customer_ref" invisible="1"/>
+                                        <field name="short_customer_ref" widget="char"/>
+                                        <field name="dest_partner_names"/>
+                                    </group>
+                                    <newline/>
+                                    <group>
+                                        <field name="no_line" invisible="1"/>
+    <!--                                    <field name="pricelist_id" string="Currency" readonly="not no_line or state != 'draft' or partner_type in ['internal', 'intermission', 'section']" domain="[('type', '=', 'purchase'), ('in_search', '=', partner_type)]"/>-->
+    <!--                                    <button name="change_currency" string="Change currency" icon="terp-dolar" type="object" invisible="state not in ['draft', 'draft_p', 'validated'] or partner_type in ['internal', 'intermission', 'section'] or doc_locked_for_sign"/>-->
+                                    </group>
+    <!--                                <button string="Round Qty to SoQ" type="object" name="round_to_soq" icon="gtk-execute" invisible="state != 'draft' or doc_locked_for_sign"/>-->
+                                </group>
+                            </group>
+<!--                            <group name="import" string=" Import Lines " invisible="state not in ['draft', 'draft_p', 'validated', 'validated_p'] or doc_locked_for_sign">-->
+<!--                                <button name="wizard_import_po_line" string="Import lines" icon="gtk-dnd" type="object" invisible="state != 'draft'"/>-->
+<!--                                <button name="wizard_update_po_line" string="Update lines" icon="gtk-ok" type="object" invisible="state not in ['draft', 'draft_p'] and (partner_type != 'external' or state not in ['validated', 'validated_p'])"/>-->
+<!--                                <button name="wizard_import_ad" string="Import AD" icon="terp-stock_symbol-selection" type="object" invisible="state != 'draft'"/>-->
+<!--                                <button name="button_cancel_lines" string="Cancel Lines" icon="gtk-remove" type="object" invisible="state not in ['draft', 'draft_p'] and (partner_type not in ['external', 'esc'] or state not in ['validated', 'validated_p'])" />-->
+<!--                                <button name="check_lines_to_fix" string="Check Lines" icon="gtk-dialog-warning" type="object" invisible="state != 'draft'" and (" context="{'rfq_ok': False}"/>-->
+<!--                                <button name="add_multiple_lines" string="Add multiple lines" icon="gtk-add" type="object" invisible="state != 'draft'"/>-->
+<!--                            </group>-->
+<!--                            <group invisible="(state not in ['validated', 'validated_p'] and (partner_type not in ['esc', 'external'] or state not in ['confirmed', 'confirmed_p'])) or doc_locked_for_sign">-->
+<!--                                <button name="wizard_import_file" string="Import PO confirmation" icon="gtk-execute" type="object" />-->
+<!--                                <button name="export_po_integration" string="Export PO Validated" icon="gtk-execute" type="object" />-->
+<!--                            </group>-->
+<!--                            <field name="order_line" nolabel="1" mode="list,form"-->
+<!--                                context="{'purchase_id': active_id, 'partner_type': partner_type, 'categ': categ, 'pricelist_id': pricelist_id, 'rfq_ok': False, 'from_fo': po_from_fo or po_from_ir or False}"-->
+<!--                                on_change="order_line_change(order_line, show_default_msg, partner_id)"-->
+<!--                                filter_selector="[('Show all', []), ('ESC Confirmed', [('esc_confirmed', '=', True)]), ('ESC Unconfirmed', [('esc_confirmed', '=', False)])], [('Show all', []), ('Show validated only', [('state', 'in', ['validated', 'validated_n', 'sourced_sy', 'sourced_v', 'sourced_n'])]), ('Hide closed', [('state', 'not in', ['done', 'cancel', 'cancel_r'])]), ('Show closed only', [('state', '=', 'done')]), ('Hide cancelled', [('state', 'not in', ['cancel', 'cancel_r'])]), ('Show cancelled only', [('state', 'in', ['cancel', 'cancel_r'])])]"-->
+<!--                                default_selector="['0', '4']" o2m_selectable="2"-->
+<!--                                >-->
+<!--                                <list string="Lines" hide_delete_button="True" colors="red: mml_status == 'F' or msl_status == 'F' or to_correct_ok == True or inactive_product == True or red_color == True or (not origin and from_fo) or (not default_code and not nomenclature_description) or no_prod_nr_id != False; #C8C8C8: fake_state == 'cancel'; orange:product_qty == 0.00;blue: soq_updated == True" noteditable="fake_state not in ['draft', 'draft_p', 'validated_n', 'validated'] or no_prod_nr_id != False" button_attrs="{'invisible': ['|', '|', ('state', 'not in', ['draft', 'draft_p', 'validated_p', 'validated']), '&amp;', ('partner_type', 'in', ['internal', 'intermission', 'section']), ('state', 'in', ['validated', 'validated_p']), ('doc_locked_for_sign', '=', True)]}" editable="both" nopopup="po_locked==True">-->
+<!--                                    <button name="get_error" type="object" icon="gtk-dialog-warning" string="Show error" invisible="not to_correct_ok and not inactive_product and not no_prod_nr_id" />-->
+<!--                                    <field name="line_number" readonly="1"/>-->
+<!--                                    <field name="default_code" displayon="noteditable"/>-->
+<!--                                    <field name="default_name" displayon="noteditable"/>-->
+
+<!--                                    <field name="product_id" context="partner_id=parent.partner_id,quantity=product_qty,pricelist=parent.pricelist_id,uom=product_uom,warehouse=parent.warehouse_id, available_for_restriction=parent.partner_type,search_default_not_restricted=1,categ=parent.categ"-->
+<!--                                           on_change="product_id_on_change(parent.pricelist_id,product_id,product_qty,product_uom,parent.partner_id, parent.date_order,parent.fiscal_position,date_planned,name,price_unit,notes,fake_state,old_price_unit,nomen_manda_0,comment,context, parent.categ, False, linked_sol_id, select_fo, po_order_type, instance_sync_order_ref, rfq_ok)"-->
+<!--                                           readonly="tender_line_id or po_locked" required="not comment" displayon="editable" />-->
+<!--                                    <field name="comment" required="not product_id" readonly="po_locked"/>-->
+<!--                                    <field name="nomenclature_description" readonly="1" />-->
+<!--                                    <button name="openform"-->
+<!--                                        special="openform"-->
+<!--                                        string="Configurator"-->
+<!--                                        invisible="default_code or fake_state not in ['draft', 'draft_p', 'validated_n', 'validated'] or no_prod_nr_id or po_locked"-->
+<!--                                        context="{'nom_configurator': True}"-->
+<!--                                        icon="terp-go-week" />-->
+<!--                                    <field name="supplier_code" displayon="noteditable" />-->
+<!--                                    <field name="inactive_error" invisible="1"/>-->
+<!--                                    <field name="internal_code" invisible="True"/>-->
+<!--                                    <field name="internal_name" invisible="True"/>-->
+<!--                                    <field name="supplier_name" invisible="True"/>-->
+<!--                                    <field name="fake_id" invisible="True"/>-->
+<!--                                    <field name="product_qty" context="partner_id=parent.partner_id,quantity=product_qty,pricelist=parent.pricelist_id,uom=product_uom,warehouse=parent.warehouse_id"-->
+<!--                                           on_change="product_qty_change(parent.pricelist_id,product_id,product_qty,product_uom,parent.partner_id,parent.date_order,parent.fiscal_position,date_planned,name,price_unit,notes,fake_state,old_price_unit,'','', context)"-->
+<!--                                           string="Qty" readonly="po_locked"/>-->
+<!--                                    <field name="product_uom" on_change="product_uom_change(parent.pricelist_id,product_id,product_qty,product_uom,parent.partner_id, parent.date_order,parent.fiscal_position,date_planned,name,price_unit,notes)"-->
+<!--                                           domain="[('uom_by_product', '=', product_id)]" readonly="po_locked"/>-->
+<!--                                    <field name="price_unit" on_change="price_unit_change(fake_id, price_unit, product_id, product_uom, product_qty, parent.pricelist_id, parent.partner_id, parent.date_order, change_price_ok, parent.state, old_price_unit, '', '', context)"-->
+<!--                                           readonly="po_locked"/>-->
+<!--                                    <field name="price_subtotal"/>-->
+<!--                                    <field name="original_changed" readonly="1" string="CHG"/>-->
+<!--                                    <field name="change_price_ok" invisible="1"/>-->
+<!--                                    <field name="old_price_unit" invisible="1"/>-->
+<!--                                    <field name="date_planned" readonly="fake_state not in ['', 'draft'] or po_locked"/>-->
+<!--                                    <field name="esti_dd" readonly="fake_state not in ['validated', 'validated_n']"/>-->
+<!--                                    <field name="confirmed_delivery_date" readonly="fake_state not in ['', 'draft', 'validated', 'validated_n']"/>-->
+<!--                                    <field name="stock_take_date" readonly="fake_state not in ['', 'draft'] or po_locked"/>-->
+<!--                                    <button name="button_analytic_distribution" string="Analytical distribution" type="object" context="{'partner_type': parent.partner_type}" icon="terp-stock_symbol-selection" invisible="no_prod_nr_id"/>-->
+<!--                                    <field name="analytic_distribution_state_recap" string="A.D"/>-->
+<!--                                    <field name="account_4_distribution" string="Acc. for Ana. Distrib." invisible="1"/>-->
+<!--                                    <field name="kit_pol_check" invisible="True"/>-->
+<!--                                    <field name="po_state_stored" invisible="True"/>-->
+<!--                                    <button name="de_kitting" context="{'product_id': product_id}" string="Replace with kit components..." type="object" icon="gtk-dnd-multiple" invisible="not kit_pol_check or fake_state not in ['draft', 'validated', 'validated_n'] or po_locked"/>-->
+<!--                                    <field name="red_color" invisible="1"/>-->
+<!--                                    <field name="tender_line_id" invisible="1"/>-->
+<!--                                    <field name="to_correct_ok" invisible="1"/>-->
+<!--                                    <field name="esc_confirmed" readonly="1" invisible="context.get('partner_type', False) != 'esc' or fake_state != 'draft'"/>-->
+<!--                                    <field name="fake_state" invisible="1"/>-->
+<!--                                    <field name="state_to_display"/>-->
+<!--                                    <field name="inactive_product" invisible="1"/>-->
+<!--                                    <field name="from_fo" invisible="1" readonly="1"/>-->
+<!--                                    <field name="origin" invisible="1" readonly="1"/>-->
+<!--                                    <field name="soq_updated" invisible="1" readonly="1"/>-->
+<!--                                    <field name="order_state_purchase_order_line" invisible="True"/>-->
+<!--                                    <field name="linked_sol_id" invisible="True"/>-->
+<!--                                    <field name="select_fo" invisible="True"/>-->
+<!--                                    <field name="po_order_type" invisible="True"/>-->
+<!--                                    <field name="instance_sync_order_ref" invisible="True"/>-->
+<!--                                    <field name="rfq_ok" invisible="True"/>-->
+<!--                                    <field name="no_prod_nr_id" invisible="True"/>-->
+<!--                                    <field name="po_locked" invisible="True"/>-->
+<!--                                    <button string="Split line" icon="terp-stock_effects-object-colorize" name="open_split_wizard" type="object" invisible="fake_state not in ['draft', 'validated', 'validated_n'] or no_prod_nr_id or po_locked"/>-->
+<!--                                    <button string="Validate" icon="terp-check" name="validated" type="object" invisible="fake_state != 'draft' or no_prod_nr_id" header="True" context="{'from_button': True}"/>-->
+<!--                                    <button string="Confirm" icon="terp-check" name="button_confirmed" type="object" invisible="fake_state not in ['validated', 'validated_n'] or no_prod_nr_id" header="True"/>-->
+<!--                                    <button string="Validate reception" icon="terp-camera_test" name="done" type="workflow" invisible="fake_state != 'confirmed' or order_type != 'direct' or (dest_partner_type in ['internal', 'section', 'intermission'] and po_version != 1)"/>-->
+<!--                                    <button string="Cancel" icon="gtk-del" type="object" name="ask_unlink" invisible="(fake_state != 'draft' and partner_type not in ['external', 'esc']) or (fake_state not in ['draft', 'validated', 'validated_n'] and partner_type in ['external', 'esc']) or po_locked"/>-->
+<!--                                    <field name="mml_status" />-->
+<!--                                    <field name="msl_status" />-->
+<!--                                </list>-->
+<!--                                &lt;!&ndash; default form view &ndash;&gt;-->
+<!--                            </field>-->
+                        </page>
+                        <page string="Linked documents" invisible="categ not in ['service', 'transport']">
+                            <group invisible="categ != 'transport'">
+                                <separator string="Purchase Order"/>
+                                <field name="transport_order_id" domain="[('rfq_ok', '=', False)]"/>
+                            </group>
+                            <newline/>
+                            <group colspan="4" col="4">
+                                <group colspan="1" invisible="categ != 'transport'">
+                                    <separator string="Delivery documents"/>
+    <!--                                <field name="picking_transport_ids" nolabel="1" widget="many2many" domain="[('transport_order_id', '=', False), ('type', '=', 'out'), ('converted_to_standard', '=', True)]">-->
+    <!--                                    <list string="Delivery Orders">-->
+    <!--                                        <field name="name"/>-->
+    <!--                                        <field name="reason_type_id"/>-->
+    <!--                                        <field name="date"/>-->
+    <!--                                        <field name="min_date"/>-->
+    <!--                                        <field name="state"/>-->
+    <!--                                    </list>-->
+    <!--                                </field>-->
+                                </group>
+                                <field name="transport_active" invisible="1"/>
+                                <group colspan="1" invisible="categ not in ['service', 'transport'] or not transport_active">
+                                    <separator string="Transport documents for Customs Fees"/>
+    <!--                                <field name="transport_customs_fees_ids" nolabel="1" widget="many2many" readonly="1">-->
+    <!--                                    <list string="Inbound/Outbound Transport Orders">-->
+    <!--                                        <field name="parent_name"/>-->
+    <!--                                        <field name="parent_state"/>-->
+    <!--                                    </list>-->
+    <!--                                </field>-->
+                                </group>
+                                <group colspan="1" invisible="categ not in ['service', 'transport'] or not transport_active">
+                                    <separator string="Transport documents for Transport Fees"/>
+    <!--                                <field name="transport_transport_fees_ids" nolabel="1" widget="many2many" readonly="1">-->
+    <!--                                    <list string="Inbound/Outbound Transport Orders">-->
+    <!--                                        <field name="parent_name"/>-->
+    <!--                                        <field name="parent_state"/>-->
+    <!--                                    </list>-->
+    <!--                                </field>-->
+                                </group>
+                                <group colspan="1" invisible="categ != 'transport'">
+                                    <separator string="Shipment documents"/>
+    <!--                                <field name="shipment_transport_ids" nolabel="1" widget="many2many" domain="[('transport_order_id', '=', False), ('parent_id', '!=', False)]">-->
+    <!--                                    <list string="Shipments">-->
+    <!--                                        <field name="name"/>-->
+    <!--                                        <field name="partner_id"/>-->
+    <!--                                        <field name="num_of_packs"/>-->
+    <!--                                        <field name="date"/>-->
+    <!--                                        <field name="date_of_departure"/>-->
+    <!--                                        <field name="state"/>-->
+    <!--                                    </list>-->
+    <!--                                </field>-->
+                                </group>
+                            </group>
+                        </page>
+                        <page string="Delivery &amp; Invoicing">
+                            <group>
+                                <separator string="Dates"/>
+                                <group>
+                                    <group>
+                                        <field name="delivery_requested_date" readonly="state != 'draft'" on_change="onchange_requested_date(partner_id,date_order,delivery_requested_date,est_transport_lead_time, order_type, context)"/>
+                                    </group>
+                                    <group>
+                                        <field name="delivery_requested_date_modified" readonly="state not in ['draft_p', 'validated', 'validated_p']" />
+<!--                                    <button name="update_date" string="Apply to lines" type="object" context="{'field_name': 'estimated', 'type': 'purchase.order'}" icon="gtk-indent" invisible="state not in ['draft', 'draft_p', 'validated', 'validated_p']"/>-->
+                                    </group>
+                                    <newline/>
+                                    <group>
+                                        <field name="transport_type" on_change="onchange_transport_type(partner_id,transport_type,delivery_requested_date,context)" readonly="state not in ['draft', 'draft_p', 'validated']"/>
+                                        <field name="ready_to_ship_date" readonly="shipped or state not in ['draft', 'draft_p', 'validated']" invisible="partner_type == 'external'"/>
+                                        <field name="arrival_date" readonly="shipped_rate or state == 'done'" invisible="partner_type == 'international'"/>
+                                    </group>
+                                </group>
+                                <group>
+                                    <group>
+                                        <field name="delivery_confirmed_date" readonly="state not in ['draft', 'draft_p', 'validated', 'validated_p']"/>
+<!--                                    <button name="update_date" string="Apply to lines" type="object" context="{'field_name': 'confirmed', 'type': 'purchase.order'}" icon="gtk-indent" invisible="state not in ['draft', 'draft_p', 'validated', 'validated_p', 'sourced_p']"/>-->
+                                    </group>
+                                    <newline/>
+                                    <group>
+                                        <field name="est_transport_lead_time" readonly="state not in ['draft', 'draft_p', 'validated']"/>
+                                        <field name="shipment_date" readonly="shipped or state not in ['draft', 'draft_p', 'validated']" invisible="partner_type == 'external'"/>
+                                    </group>
+                                </group>
+                            </group>
+                            <group>
+                                <separator string="Delivery"/>
+                                <field name="dest_partner_type" invisible="1" />
+<!--                                <field name="dest_partner_id" invisible="order_type != 'direct'" required="order_type == 'direct'" readonly="state not in ['draft', 'draft_p', 'validated']" on_change="on_change_dest_partner_id(dest_partner_id)" domain="[('id', '!=', company_id), ('available_on_po_dpo', '=', active_id)]"/>-->
+                                <field name="dest_partner_id" invisible="order_type != 'direct'" required="order_type == 'direct'" readonly="state not in ['draft', 'draft_p', 'validated']" domain="[('id', '!=', company_id)]"/>
+                                <field name="dest_address_id" domain="[('dest_address', '=', dest_partner_id)]" required="order_type == 'direct'" readonly="state not in ['draft', 'draft_p', 'validated']"/>
+                                <field name="cross_docking_ok" invisible="1" />
+                                <field name="location_names" readonly="1"/>
+<!--                                <field name="incoterm_id" invisible="not intl_supplier_ok" readonly="state not in ['draft', 'draft_p', 'validated', 'validated_p']" widget="selection"/>-->
+                            </group>
+                            <field name="validator" invisible="1"/>
+                            <field name="date_approve" invisible="1"/>
+                        </page>
+                        <page string="Invoices">
+                            <group>
+                                <separator string="Invoice Control"/>
+                                <field name="invoice_method" invisible="order_type in ['donation_exp', 'donation_st', 'in_kind', 'loan', 'loan_return']"/>
+                                <field name="unallocation_ok" readonly="cross_docking_ok or allocation_setup != 'mixed'"/>
+<!--                                <field name="fiscal_position" widget="selection" readonly="state != 'draft'"/>-->
+<!--                                <field name="invoice_address_id" domain="[('inv_address', 'in', [company_id])]" context="contact_display='partner_address'" required="order_type == 'direct'" readonly="state in ['confirmed', 'confirmed_p', 'done', 'cancel']"/>-->
+                            </group>
+                            <separator string="Invoices"/>
+<!--                            <newline/>-->
+<!--                            <field name="invoice_ids" nolabel="1" context="{'type':'in_invoice', 'journal_type': 'purchase'}"/>-->
+                            <separator string="Down Payments"/>
+<!--                            <field name="down_payment_ids" nolabel="1">-->
+<!--                                <list string="Down Payment">-->
+<!--                                    <field name="statement_id" string="Register"/>-->
+<!--                                    <field name="date"/>-->
+<!--                                    <field name="name" string="Description"/>-->
+<!--                                    <field name="account_id"/>-->
+<!--                                    <field name="amount_currency" string="Amount" sum="Total Amount"/>-->
+<!--                                    <field name="down_payment_amount" string="Expended amount"/>-->
+<!--                                    <field name="currency_id"/>-->
+<!--                                </list>-->
+<!--                            </field>-->
+                            <field name="has_tax_at_line_level" invisible="1" />
+<!--                            <field name="tax_line" nolabel="1" invisible="partner_type != 'external or order_type == 'in_kind'" readonly="not not_beyond_validated or has_tax_at_line_level">-->
+<!--                                <list editable="bottom" string="Taxes">-->
+<!--                                    <field name="account_tax_id" on_change="tax_code_change(account_tax_id, parent.amount_untaxed, parent.partner_id, context)" />-->
+<!--                                    <field name="name"/>-->
+
+<!--                                    <field name="account_id"-->
+<!--                                           domain="[('type', 'not in', ['view', 'consolidation']),-->
+<!--                                                    ('user_type_code', '=', 'tax')]"/>-->
+
+<!--                                    <field name="partner_id" readonly="1"/>-->
+<!--                                    <field name="base" readonly="1"/>-->
+<!--                                    <field name="amount" />-->
+<!--                                    <field name="base_amount" invisible="1"/>-->
+<!--                                </list>-->
+<!--                            </field>-->
+
+                        </page>
+                        <page string="Notes">
+                            <group>
+                                <field name="import_in_progress" readonly="1" invisible="0"/>
+                                <field name="auto_exported_ok" readonly="1"/>
+                                <field name="can_be_auto_exported" invisible="1" />
+<!--                                <button name="auto_export_manual" string="Run PO export job" invisible="not can_be_auto_exported or doc_locked_for_sign" type="object" icon="terp-camera_test"/>-->
+                            </group>
+                            <field name="notes" nolabel="1"/>
+                            <separator string="Message ESC"/>
+                            <field name="message_esc" nolabel="1" readonly="1" invisible="partner_type != 'esc'"/>
+                            <separator string="Project info"/>
+                            <field name="project_ref" readonly="1"/>
+                            <separator string="Sourcing group"/>
+<!--                            <field name="related_sourcing_id" readonly="True"/>-->
+                            <separator string="Import filenames"/>
+<!--                            <field name="import_filenames" mode="list" readonly="1" nolabel="1">-->
+<!--                                <list string="Imported filenames">-->
+<!--                                    <field name="timestamp"/>-->
+<!--                                    <field name="filename"/>-->
+<!--                                </list>-->
+<!--                            </field>-->
+                        </page>
+<!--                        <page string="Supplier Catalogue" view_id="purchase.purchase_order_form_catalogue" invisible="not catalogue_display_tab" />-->
+<!--                        &signature_template;-->
+                    </notebook>
+                    <group>
+                        <group invisible="categ == 'transport' or not display_intl_transport_ok">
+                            <field name="display_intl_transport_ok" invisible="1"/>
+                            <field name="intl_supplier_ok" invisible="1"/>
+                            <label for="transport_cost" string="Estimated transport costs : "/>
+                            <field name="transport_cost" invisible="not display_intl_transport_ok" required="intl_supplier_ok" readonly="shipped_rate" nolabel="1"/>
+<!--                            <field name="transport_currency_id" domain="[('is_po_functional', '=', pricelist_id)]" invisible="not display_intl_transport_ok" required="intl_supplier_ok" readonly="shipped_rate" nolabel="1"/>-->
+                            <field name="transport_currency_id" invisible="not display_intl_transport_ok" required="intl_supplier_ok" readonly="shipped_rate" nolabel="1"/>
+<!--                            <label class="o_form_label"/>-->
+                            <separator invisible="not display_intl_transport_ok"/>
+                        </group>
+<!--                        <field name="currency_id" readonly="1"/>-->
+                        <field name="amount_untaxed" sum="Untaxed amount"/>
+                        <field name="amount_tax"/>
+                        <field name="amount_total" sum="Total amount"/>
+<!--                        <button name="button_dummy" string="Compute" type="object" icon="gtk-execute" invisible="state != 'draft' or doc_locked_for_sign"/>-->
+                        <newline/>
+                        <field name="functional_currency_id" readonly="1"/>
+                        <field name="functional_amount_untaxed"/>
+                        <field name="functional_amount_tax"/>
+                        <field name="functional_amount_total"/>
+<!--                        <button type="object" string="Remove taxes on lines" name="remove_line_tax" invisible="not has_tax_at_line_level or not not_beyond_validated or doc_locked_for_sign" icon="gtk-cut" confirm="Remove taxes on all PO lines ?"/>-->
+                        <newline/>
+                        <field name="total_price_include_transport" readonly="1" invisible="categ == 'transport' or not display_intl_transport_ok"/>
+                        <newline/>
+                        <field name="func_total_price_include_transport" readonly="1" invisible="categ == 'transport' or not display_intl_transport_ok"/>
+                    </group>
+                    <group>
+                        <field name="state" readonly="1"/>
+<!--                        <button name="close_lines" type="object" string="Validate the reception" icon="terp-camera_test" invisible="state not in ['confirmed', 'confirmed_p'] or order_type != 'direct' or (dest_partner_type in ['internal', 'section', 'intermission'] and po_version > 1)"/>-->
+<!--                        <button name="purchase_cancel" type="object" invisible="(state not in ['draft', 'draft_p'] and partner_type not in ['external', 'esc']) or (state not in ['draft', 'draft_p', 'validated', 'validated_p'] and partner_type in ['external', 'esc']) or doc_locked_for_sign" string="Cancel document" icon="gtk-cancel" help="all the lines will be Cancelled where this status change is feasible" />-->
+<!--                        <button name="action_cancel_draft" states="cancel" string="Set to Draft" type="object" icon="gtk-convert" invisible="canceled_end or po_from_fo or po_from_ir or po_from_rr or tender_id or state != 'cancel' or doc_locked_for_sign"/>-->
+<!--                        <button name="validate_lines" states="draft,draft_p" string="Validate document" type="object" icon="gtk-go-forward" help="all the lines will be Validated where this status change is feasible" context="{'from_button': True}"/>-->
+<!--                        <button name="confirm_lines" states="validated,validated_p" string="Confirm document" icon="gtk-go-forward" type="object" help="all the lines will be Confirmed where this status change is feasible" />-->
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+</odoo>

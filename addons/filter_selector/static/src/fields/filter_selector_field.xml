@@ -1,0 +1,16 @@
+<templates xml:space="preserve">
+    <t t-name="filter_selector.FilterSelectorOne2Many">
+        <div t-ref="filterSelectorRoot">
+            <FilterToolbar 
+                t-if="filterOptions.length or searchFields.length"
+                options="filterOptions"
+                selected="state.selected"
+                onSelect.bind="onSelect"
+                searchFields="searchFields"
+                searchValues="state.search"
+                onSearch.bind="onSearch"
+            />
+            <X2ManyField t-props="props"/>
+        </div>
+    </t>
+</templates>
